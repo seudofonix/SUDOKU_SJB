@@ -1,6 +1,8 @@
 # SUDOKU_SJB
 Implementacion del Sudoku para Algoritmica y Programacion I. Universidad Nacional de la Patagonia San Juan Bosco 2025.
 
+
+
 # ARCHIVOS
 
 __SUDOKU.C__
@@ -12,6 +14,8 @@ Archivo header, contiene las definiciones de las funciones y las estructuras del
 __GRAFICOS.H__
 Archivo de graficos, el archivo principal debe usar las funciones de este archivo de forma que si se llega a implementar a futuro alguna interfaz grafica no haya que hacer 
 cambios en sudoku.c
+
+
 
 
 # PRACTICAS DE CODIGO 
