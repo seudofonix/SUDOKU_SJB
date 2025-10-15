@@ -7,7 +7,7 @@
 #include "tablero.h"
 #include "tablero.c" // como se hace esto??????
 #include "graficos.h"
-//#include "graficos.c"
+#include "graficos.c"
 
 // ------ VARIABLES GLOBALES ------
 
@@ -18,6 +18,7 @@
 int main(void)
 {
 	imprimirTablero();
+	leerMovimiento();
 	
 	return 0;
 }

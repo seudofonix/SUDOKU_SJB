@@ -10,6 +10,7 @@
  * Despues voy a tener que reescribir esta funcion para que use 
  * cursores en lugar de printf y saltos de linea. 
  * */
+ 
 void imprimirTablero()
 {
 	// Se puede ajustar la posicion de la tabla con estos dos valores. 
@@ -55,9 +56,18 @@ void imprimirTablero()
 
 void editarTablero(char* casillero, int movimiento)
 {
-	// char* casillero formato LETRANUMERO
-	// A7, B9, E2
+	// int tablero[9][9]
+	// char* casillero es una cadena de dos caracteres, un caracter en frente del otro 
+	// la funcion asume que casillero es un parametro valido
+	// e.g. "A7", "B9", "E2"
 	
+	int indiceLetra = (toupper(*casillero) - 'A') % 8;
+	printf("%d", indiceLetra);
+	casillero++;
+	int indiceNumero = (*casillero - '0') % 8;
+	printf("%d", indiceNumero);
+	tablero[indiceLetra][indiceNumero] = movimiento % 8;
 	
 	return;
 }
+
