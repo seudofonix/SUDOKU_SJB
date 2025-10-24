@@ -1,73 +1,235 @@
-#include <stdlib.h> 
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include "tablero.h"
 
-/* Dado que el juego entero se va a hacer en terminal hay que implementar
- * un sistema de cursor para poder dibujar a distintas partes de la pantalla
- * con tal de poder mostrar cosas como el timer en pantalla.
-*/
+//------------- ---   CREACION TABLERO-------- 
 
-/*
- * Despues voy a tener que reescribir esta funcion para que use 
- * cursores en lugar de printf y saltos de linea. 
- * */
- 
-void imprimirTablero()
-{
-	// Se puede ajustar la posicion de la tabla con estos dos valores. 
-	const int X_OFFSET = 4;
-	const int Y_OFFSET = 2;
-	
-	const char VERTICAL = '|';
-	char letra_columna = 'A';
-	char numero_fila = '0';
-	
-	system("cls"); // Limpia la pantalla. Puede causar problemas con algunos antivirus.
+// Definición de la variable global del tablero - matriz 9x9 inicializada con ceros
+int tablero[9][9] = {0};
 
-	for (int i = 0 ; i < X_OFFSET ; i++)
-		printf(" ");
-	
-	for (int i = 0 ; i < 9 ; i++)
-		printf("%c ", numero_fila++);
-	
-	for (int i = 0 ; i < Y_OFFSET ; i++)
-		printf("\n");
-	
-	for (int columna = 0 ; columna < 9 ; columna++)
-	{
-		printf("%c", letra_columna++);
-		
-		for (int i = 0 ; i < X_OFFSET-2 ; i++)
-			printf(" ");
-		
-		for (int fila = 0 ; fila < 9 ; fila++)
-		{	
-			printf("%c", VERTICAL);
-			
-			if (tablero[columna][fila] == 0)
-				printf(" ");
-			else
-				printf("%d", tablero[columna][fila]);
-		}
-		printf("%c", VERTICAL);
-		printf("\n");
-	}
+void imprimirTablero() {
+    // Limpiar la pantalla de la terminal
+    #ifdef _WIN32
+    system("cls");
+    #else
+        system("clear"); // Para Linux/Mac
+    #endif
+    
+    
+    // Espacio superior para mejor presentación
+    printf("\n");
+    // Título del juego
+    printf("    SUDOKU - TABLERO\n");
+    printf("\n");
+    
+    // Imprimir números de columnas (1-9) en la parte superior
+    printf("     ");  // 5 espacios para alinear números de columnas con letras de filas
+
+    for (int col = 1; col <= 9; col++) { //Bucle para las 9 columnas (1 a 9)
+        printf("%d   ", col);  // Imprime el número de columna seguido de 3 espacios
+        // AGREGAR ESPACIO EXTRA ENTRE BLOQUES DE 3 COLUMNAS
+        if (col % 3 == 0 && col != 9) { //Si es múltiplo de 3 y no es la última columna
+            printf(" "); 
+        }
+    }
+    printf("\n");  // Nueva línea después de los números de columnas
+    
+    // Línea horizontal superior del tablero (borde grueso)
+    printf("   ╔═══╤═══╤═══╦═══╤═══╤═══╦═══╤═══╤═══╗\n");
+    
+    // RECORRER TODAS LAS FILAS DEL TABLERO (0-8 que corresponden a A-I)
+    for (int fila = 0; fila < 9; fila++) {
+
+        // Imprimir letra de fila (A-I) y borde izquierdo
+        printf(" %c ║", 'A' + fila); // Convierte número a letra: 0→A, 1→B, ..., 8→I
+        
+        
+        // RECORRER TODAS LAS COLUMNAS DE LA FILA ACTUAL
+
+        for (int col = 0; col < 9; col++) {
+            // Verificar si la celda está vacía (valor 0)
+            if (tablero[fila][col] == 0) {
+                printf(" · ");  // Mostrar punto medio para celdas vacías
+            } else {
+                printf(" %d ", tablero[fila][col]);  // Mostrar número de la celda
+            }
+
+            
+            // AGREGAR SEPARADORES ENTRE COLUMNAS (excepto después de la última columna)
+            if (col < 8) {
+
+                // VERIFICAR SI ESTAMOS EN EL BORDE DE UN BLOQUE 3x3
+
+                if ((col + 1) % 3 == 0) { // Si la siguiente columna es múltiplo de 3
+                    printf("║");  // Separador vertical grueso entre bloques
+                } else {          // Si estamos dentro de un bloque
+                    printf("│");  // Separador vertical fino dentro del bloque
+                }
+            }
+        }
+        printf("║\n");  // Borde derecho y nueva línea
+        
+        // AGREGAR SEPARADORES ENTRE FILAS (excepto después de la última fila)
+        if (fila < 8) {
+
+            // Verificar si estamos en el borde de un bloque 3x3 vertical
+
+            if ((fila + 1) % 3 == 0) { // Si la siguiente fila es múltiplo de 3
+                // Línea horizontal gruesa entre bloques
+                printf("   ╠═══╪═══╪═══╬═══╪═══╪═══╬═══╪═══╪═══╣\n");
+            } else {
+                // Línea horizontal fina dentro del bloque
+                printf("   ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢\n");
+            }
+        }
+    }
+    
+    // Línea horizontal inferior del tablero (borde grueso)
+    printf("   ╚═══╧═══╧═══╩═══╧═══╧═══╩═══╧═══╧═══╝\n");
+    printf("\n");  // Espacio final para mejor legibilidad
+}
+
+void inicializarTableroVacio() {
+    // RECORRER TODAS LAS FILAS DEL TABLERO
+    for (int i = 0; i < 9; i++) {
+        // RECORRER TODAS LAS COLUMNAS DE CADA FILA
+        for (int j = 0; j < 9; j++) {
+            tablero[i][j] = 0;  // Establecer cada celda como vacía (valor 0)
+        }
+    }
 }
 
 
-void editarTablero(char* casillero, int movimiento)
-{
-	// int tablero[9][9]
-	// char* casillero es una cadena de dos caracteres, un caracter en frente del otro 
-	// la funcion asume que casillero es un parametro valido
-	// e.g. "A7", "B9", "E2"
-	
-	int indiceLetra = (toupper(*casillero) - 'A') % 8;
-	printf("%d", indiceLetra);
-	casillero++;
-	int indiceNumero = (*casillero - '0') % 8;
-	printf("%d", indiceNumero);
-	tablero[indiceLetra][indiceNumero] = movimiento % 8;
-	
-	return;
+
+//----------- GENERADOR DE NUM ALEATORIOS------
+
+// Función para generar un número aleatorio entre min y max
+int generarNumeroAleatorio(int min, int max){
+    return rand() % (max - min + 1) + min;
 }
+
+
+
+//-------- LLENA TABLERO CON NUMEROS VALIDOS LISTO PARA JUGAR-----
+
+//FUNCION PARA VERIFICAR SI UN MOVIMIENTO ES VALIDO
+int esMovimientoValido(int fila, int columna, int numero){
+
+    //verificar fila
+    for (int c=0; c <9; c++){
+        if (tablero[fila][c]== numero) return 0;
+    }
+
+    //verificar columna
+    for (int f =0; f < 9; f++){
+        if (tablero[f][columna]== numero) return 0;
+    }
+
+    //verificar bloque 3x3
+    int inicioFila = (fila/3)*3;
+    int inicioColumna = (columna/3) *3;
+
+    for (int i=0; i< 3; i++){
+        for (int j=0; j<3; j++){
+            if (tablero[inicioFila + i][inicioColumna + j] == numero) return 0;
+        }
+    }
+
+    return 1;
+
+}
+
+// Función para llenar el tablero con un patrón de Sudoku FACIL
+void llenarTableroNivelFacil(){
+
+    inicializarTableroVacio();
+
+    printf("Generando Sudoku nivel fácil...\n");
+
+    int celdasLlenadas = 0;
+
+    while (celdasLlenadas < 35){
+        //Elegir celda al azar
+        int fila = generarNumeroAleatorio(0,8);
+        int columna = generarNumeroAleatorio(0,8);
+
+    
+        //si la celda esta vacia, intentar poner numero
+
+        if (tablero[fila][columna] == 0){
+            // Probar numeros del 1 al 9
+            for (int numero = 1; numero <= 9; numero++){
+                //verificar si el num es valido 
+                if (esMovimientoValido(fila, columna, numero)){
+                    // Poner el numero y contar
+                    tablero[fila][columna]= numero;
+                    celdasLlenadas++;
+                    break;
+                }
+            }
+        }
+
+    }
+
+    
+}
+
+//-------INTERACCION DEL USUARIO PARA JUGAR---------
+
+// FUNCION PARA QUE EL USER COLOQUE UN NUMERO
+void hacerMovimientoUsuario(){
+    char letraFila;
+    int columna, numero;
+
+    printf("\n --- HACER MOVIMIENTO----\n");
+    printf("Ejemplo: A5 7 (fila A, columna 5, numero 7) \n");
+    printf("ingrese movimiento: ");
+
+    //Lee entrada:
+    scanf(" %c%d %d", &letraFila, &columna, &numero);
+
+    //Convertir letra a numero (A=0, B=1...)
+    int fila = letraFila - 'A';
+    columna = columna -1; // convertir 1-9 a 0-8
+
+    //verifica si la posicion es valida
+    if (fila <0 || fila >8 || columna <0 || columna > 8) {
+        printf("ERROR: Posicion invalida. Use A-I y 1-9. \n");
+        return;
+    }
+
+    //verifica si la celda está vacia
+    if (tablero[fila][columna]!=0){
+        printf("ERROR: Esa celda ya tiene número. \n");
+        return;
+    }
+
+    if (numero < 1 || numero > 9) {
+        printf("Error: Numero invalido. Debe ser 1-9. \n");
+        return;
+    }
+
+    //verifica reglas del sudoku
+    if (esMovimientoValido(fila, columna, numero)){
+        tablero[fila][columna] = numero;
+        printf("✓ Movimiento válido! Numero %d colocado en %c%d\n", numero, letraFila, columna+1);
+    } else {
+        printf("✗ Movimiento inválido! El número %d se repite.\n", numero);
+    }
+
+}
+
+//-------- FUNCION PARA VERIFICAR SI EL JUEGO ESTÁ COMPLETO( SIN VALIDACION DE SOL. UNICA)-----
+int esJuegoCompleto(){
+    for (int fila =0; fila < 9; fila++){
+        for (int columna=0; columna < 9; columna++){
+            if (tablero[fila][columna] == 0){
+                return 0; // // SI  Hay celdas vacías - juego no completo
+            }
+        }
+    }
+    return 1; // TODAS las celdas llenas- juego COMPLETO
+}
+
 
