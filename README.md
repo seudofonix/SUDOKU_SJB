@@ -1,25 +1,53 @@
+# COMANDOS DE COMPILACION
+gcc -Wall -o sudoku main.c tablero.c graficos.c archivos.c -I/usr/include/SDL2 -L/usr/lib -lSDL2main -lSDL2 -lSDL2_ttf 
+
+"./sudoku.exe"
+
 # SUDOKU_SJB
 Implementacion del Sudoku para Algoritmica y Programacion I. Universidad Nacional de la Patagonia San Juan Bosco 2025.
 
-# OBJETIVO ACTUAL
-- Definir todos los archivos que van a componer el programa y como organizarlos.
-- Imprimir el tablero por pantalla (HECHO).
-- Poder editar el tablero mediante el uso de una funcion.
+# TAREAS
+__1. Nicol Montaño:__
+    Tarea Principal: Algoritmo para generar tablero posible
+    Descripción:
+    Crear un tablero completo (LISTO)
+    Remover números estratégicamente para crear el puzzle (LISTO)
+    Crear función que verifique si un tablero cumple las reglas del Sudoku (LISTO)
+    Verificar filas, columnas y sub-cuadrículas 3x3 (LISTO)
+    Colaborar con Evelyn O. para garantizar solución única
+    Implementar diferentes niveles de dificultad//por ahora no es necesario implementarlo (NIVEL FACIL)
+
+__2. Evelyn Orellana__
+    Tarea Principal:  Verificación de solución única
+    Descripción:
+    Asegurar que el tablero generado tenga solución única
+
+__3. Ignacio Bullón__
+    Tarea Principal: Temporizador + Sistema de Puntuación Completo
+    Descripción:
+    Implementar cronómetro para medir tiempo de juego
+    Crear sistema de puntuación basado en tiempo
+    Diseñar e implementar estructura del Ranking
+    Mostrar tiempo y puntuación en tiempo real durante el juego
+
+__4. Evelyn Fernandez__
+    Tarea Principal: Lectura de movimiento + Jugabilidad del usuario
+    Descripción:
+    Implementar lectura de movimientos del usuario (LISTO)
+    Validar entradas (rangos permitidos)
+    Implementar sistema que muestre números repetidos en otro color
+    Detectar y resaltar conflictos en tiempo real
+    Crear y destruir tableros (gestión de memoria) (LISTO)
 
 # ARCHIVOS
 
-__SUDOKU.C__
-Archivo base, se encarga de manejar la logica del juego, usando las variables y funciones de los archivos "sudoku.hpp" y "graficos.hpp". 
+__MAIN.C__
+Archivo base, se encarga de manejar la logica del menu. 
 
-__SUDOKU.H__
 Archivo header, contiene las definiciones de las funciones y las estructuras del juego. 
 
-__GRAFICOS.H__
-Archivo de graficos, el archivo principal debe usar las funciones de este archivo de forma que si se llega a implementar a futuro alguna interfaz grafica no haya que hacer 
-cambios en sudoku.c
+__GRAFICOS.H y GRAFICOS.C__
+Archivo de graficos, todas las funciones que manejen los graficos se encuentran dentro de estos dos archivos. 
 
 # PRACTICAS DE CODIGO 
-Respetar las practicas de codigo cuando se va a hacer un commit al repositorio. No es necesario seguirlas al pie de la letra mientras uno se encuentra probando el codigo. 
-(esto hay que discutirlo despues)
-
-- NO imprimir cosas por pantalla usando sudoku.c. De ser necesario, llamar una funcion implementada dentro de una libreria. 
+Todas las funciones que tengan valores de retorno deben devolver 0 (cero) en caso de fallo y 1 (uno) en caso de exito. 
