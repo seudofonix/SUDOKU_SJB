@@ -1,12 +1,9 @@
-
 #ifndef ARCHIVOS_H
 #define ARCHIVOS_H
 
-	const char RANKINGS[] = {"rankings.txt"};
-	const char DEBUG_LOG[] = {"debug_log.txt"};
+	extern const char RANKINGS[];
 	
-	// FUNCIONES PROTOTIPO DEL ARCHIVO RANKINGS
-	
-	
+	void abrirArchivos();
+	void cerrarArchivos();
 
 #endif // ARCHIVOS_H
