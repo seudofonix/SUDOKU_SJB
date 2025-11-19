@@ -18,9 +18,13 @@ __1. Nicol Montaño:__
     Implementar diferentes niveles de dificultad//por ahora no es necesario implementarlo (NIVEL FACIL)
 
 __2. Evelyn Orellana__
-    Tarea Principal:  Verificación de solución única
+    Tarea Principal:  Verificación de solución única + jugabilidad del usuario
     Descripción:
     Asegurar que el tablero generado tenga solución única
+    implementacion de victoria del jugador 
+    implementar diferentes niveles de dificuldad colaborar con Evelyn M.
+    implementacion para nombre del jugador
+    
 
 __3. Ignacio Bullón__
     Tarea Principal: Temporizador + Sistema de Puntuación Completo
