@@ -9,12 +9,12 @@
 #include "archivos.h"
 #include "tablero.h"
 #include "graficos.h"
-#include "menu.h" // <--- Importante: Incluimos el menú
+#include "menu.h" // <--- Importante: Incluimos el menÃº
 
 int main(int argc, char* argv[]) {
     printf("Iniciando Sudoku Master...\n");
     
-    // --- 1. INICIALIZACIÓN DE SDL Y SISTEMAS ---
+    // --- 1. INICIALIZACIÃ“N DE SDL Y SISTEMAS ---
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         printf("Error SDL2: %s\n", SDL_GetError());
         return -1;
@@ -41,110 +41,95 @@ int main(int argc, char* argv[]) {
     
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     
-    // Inicializar la lógica del tablero (memoria)
-    crearTablero();
-    printf("Sistema listo.\n");
+    // Inicializar la lÃ³gica del tablero (memoria)
+    //crearTablero();
+    //printf("Sistema listo.\n");
     
     // Variables del bucle principal
     int running = 1;
     SDL_Event event;
-    
-    // Nos aseguramos de empezar en el menú
-    estadoActual = ESTADO_MENU; 
-    
-    // --- 2. BUCLE PRINCIPAL DEL JUEGO ---
+    estadoActual = ESTADO_MENU; // Empezamos en menÃº
+
     while (running) {
-        
-        // A. MANEJO DE EVENTOS
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                running = 0;
-            } 
+            if (event.type == SDL_QUIT) running = 0;
+
+            // LÃ³gica de inputs segÃºn estado
+            if (estadoActual == ESTADO_INGRESO_NOMBRE) {
+                manejarEscrituraNombre(&event); // Detecta Enter para ir a JUGANDO
+            }
             else if (event.type == SDL_MOUSEBUTTONDOWN) {
                 if (event.button.button == SDL_BUTTON_LEFT) {
-                    // Dependiendo del estado, llamamos a una función de click distinta
                     switch (estadoActual) {
                         case ESTADO_MENU:
                             manejarClickMenu(event.button.x, event.button.y);
+                            // Nota: manejarClickMenu cambia estado a INGRESO_NOMBRE
                             break;
-                            
-                        case ESTADO_INSTRUCCIONES:
-                            manejarClickInstrucciones(event.button.x, event.button.y);
-                            break;
-                            
                         case ESTADO_JUGANDO:
                             manejarClick(event.button.x, event.button.y);
                             break;
-                            
-                        default:
+                        case ESTADO_RANKING:
+                            manejarClickRanking(event.button.x, event.button.y);
                             break;
+                        case ESTADO_INSTRUCCIONES:
+                            manejarClickInstrucciones(event.button.x, event.button.y);
+                            break;
+                        default: break;
                     }
                 }
             }
         }
 
-        // Verificar si el menú ordenó salir
-        if (estadoActual == ESTADO_SALIR) {
-            running = 0;
-        }
-        
-        // B. LOGICA DE VICTORIA (Solo si estamos jugando)
+        if (estadoActual == ESTADO_SALIR) running = 0;
+
+        // LOGICA DE VICTORIA (Modificada)
         if (estadoActual == ESTADO_JUGANDO && esJuegoCompleto()) {
-             dibujarPantallaVictoria(renderer);
-             SDL_RenderPresent(renderer);
-             
-             // Pequeño bucle de espera para la victoria
-             int esperando = 1;
-             SDL_Event ev;
-             while (esperando && running) {
-                 while(SDL_PollEvent(&ev)){
-                     if(ev.type == SDL_QUIT){
-                         esperando = 0;
-                         running = 0;
-                     }
-                     else if(ev.type == SDL_KEYDOWN || ev.type == SDL_MOUSEBUTTONDOWN){
-                         esperando = 0; 
-                     }
-                 }
-                 SDL_Delay(10);
-             }
-             // Al terminar la victoria, volvemos al menú principal
-             estadoActual = ESTADO_MENU;
-             // Opcional: Aquí podrías llamar a una función para reiniciar el tablero si la tienes
-             // crearTablero(); 
+            
+            // 1. Calcular puntaje (ejemplo)
+            // int puntos = calcularPuntaje(tiempo); 
+            int puntos = 1500; // Valor ejemplo, usa tu lÃ³gica de tiempo
+
+            // 2. Guardar AUTOMÃTICAMENTE (Ya tenemos el nombre del inicio)
+            guardarPuntaje(nombreJugador, puntos);
+            
+            // 3. Actualizar variables para mostrar en el menÃº despuÃ©s
+            strcpy(ultimoJugador, nombreJugador);
+            ultimoPuntaje = puntos;
+
+            // 4. Mostrar Pantalla de Victoria momentÃ¡nea
+            dibujarPantallaVictoria(renderer);
+            SDL_RenderPresent(renderer);
+            SDL_Delay(2000); // Esperar 2 segundos para que vea que ganÃ³
+
+            // 5. Ir directo al Ranking
+            estadoActual = ESTADO_RANKING;
         }
 
-        // C. DIBUJADO (RENDER)
-        // Limpiamos pantalla (el color de fondo depende de la función de dibujo específica, 
-        // pero ponemos uno base por seguridad)
+        // DIBUJADO
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
-        
-        // Dibujamos según el estado
+
         switch (estadoActual) {
             case ESTADO_MENU:
-                dibujarMenuPrincipal(renderer);
+                dibujarMenuPrincipal(renderer); // Ahora muestra el Ãºltimo puntaje
                 break;
-                
-            case ESTADO_INSTRUCCIONES:
-                dibujarInstrucciones(renderer);
+            case ESTADO_INGRESO_NOMBRE:
+                dibujarIngresoNombre(renderer);
                 break;
-                
             case ESTADO_JUGANDO:
-                // Fondo específico del juego
                 SDL_SetRenderDrawColor(renderer, 40, 44, 52, 255);
                 SDL_RenderClear(renderer);
                 dibujarTableroGrafico(renderer);
                 break;
-                
-            default:
+            case ESTADO_RANKING:
+                dibujarRanking(renderer);
+                break;
+            case ESTADO_INSTRUCCIONES:
+                dibujarInstrucciones(renderer);
                 break;
         }
-        
-        // Mostrar lo dibujado
+
         SDL_RenderPresent(renderer);
-        
-        // Control de FPS (~60 FPS)
         SDL_Delay(16);
     }
     
