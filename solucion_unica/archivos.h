@@ -1,9 +1,16 @@
 #ifndef ARCHIVOS_H
 #define ARCHIVOS_H
 
-	extern const char RANKINGS[];
-	
-	void abrirArchivos();
-	void cerrarArchivos();
+// Estructura para un registro de ranking
+typedef struct {
+    char nombre[21]; // 20 caracteres + null
+    int puntaje;
+} RegistroRanking;
 
-#endif // ARCHIVOS_H
+// Funciones que el main y el menu necesitan
+void guardarPuntaje(const char* nombre, int puntaje);
+int leerTopRankings(RegistroRanking* rankingArray, int maxCantidad);
+int calcularPuntaje(double tiempoFinal);
+
+#endif
+
