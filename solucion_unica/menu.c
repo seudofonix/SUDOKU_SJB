@@ -13,17 +13,12 @@ char ultimoJugador[21] = "---";
 int ultimoPuntaje = 0;
 
 void dibujarMenuPrincipal(SDL_Renderer* renderer) {
-    // Fondo del menú
+    // 1. Fondo y Limpieza
     SDL_SetRenderDrawColor(renderer, 40, 44, 52, 255);
     SDL_RenderClear(renderer);
     
-    // Título del juego
-    SDL_Rect tituloRect = {
-        WINDOW_WIDTH / 2 - 200,
-        80,
-        400,
-        80
-    };
+    // 2. Título "SUDOKU MASTER"
+    SDL_Rect tituloRect = {WINDOW_WIDTH / 2 - 200, 50, 400, 80}; // Subí un poco el título (y=50)
     SDL_SetRenderDrawColor(renderer, 80, 80, 150, 255);
     SDL_RenderFillRect(renderer, &tituloRect);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -33,110 +28,87 @@ void dibujarMenuPrincipal(SDL_Renderer* renderer) {
     dibujarTextoCentrado(renderer, tituloRect.x, tituloRect.y, 
                         tituloRect.w, tituloRect.h, "SUDOKU MASTER", colorBlanco);
     
-    // Botones del menú
+    // 3. Configuración de Botones
     int botonWidth = 300;
-    int botonHeight = 60;
-    int startY = 200;
-    int spacing = 20;
+    int botonHeight = 50; // Los hice un poquito más bajos para que entren bien
+    int startY = 160;     // Empezamos más arriba
+    int spacing = 15;     // Menos espacio entre ellos
     
-    // Botón JUGAR
-    SDL_Rect jugarRect = {
-        WINDOW_WIDTH / 2 - botonWidth / 2,
-        startY,
-        botonWidth,
-        botonHeight
-    };
-    SDL_SetRenderDrawColor(renderer, 70, 100, 70, 255);
+    // --- BOTÓN JUGAR ---
+    SDL_Rect jugarRect = {WINDOW_WIDTH/2 - botonWidth/2, startY, botonWidth, botonHeight};
+    SDL_SetRenderDrawColor(renderer, 70, 100, 70, 255); // Verde
     SDL_RenderFillRect(renderer, &jugarRect);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderDrawRect(renderer, &jugarRect);
-    dibujarTextoCentrado(renderer, jugarRect.x, jugarRect.y, 
-                        jugarRect.w, jugarRect.h, "JUGAR", colorBlanco);
-    
-    // Botón INSTRUCCIONES
-    SDL_Rect instruccionesRect = {
-        WINDOW_WIDTH / 2 - botonWidth / 2,
-        startY + botonHeight + spacing,
-        botonWidth,
-        botonHeight
-    };
-    SDL_SetRenderDrawColor(renderer, 70, 70, 100, 255);
-    SDL_RenderFillRect(renderer, &instruccionesRect);
+    dibujarTextoCentrado(renderer, jugarRect.x, jugarRect.y, jugarRect.w, jugarRect.h, "JUGAR", colorBlanco);
+
+    // --- BOTÓN RANKING (NUEVO) ---
+    SDL_Rect rankingRect = {WINDOW_WIDTH/2 - botonWidth/2, startY + botonHeight + spacing, botonWidth, botonHeight};
+    SDL_SetRenderDrawColor(renderer, 200, 150, 50, 255); // Color Naranja/Dorado
+    SDL_RenderFillRect(renderer, &rankingRect);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderDrawRect(renderer, &instruccionesRect);
-    dibujarTextoCentrado(renderer, instruccionesRect.x, instruccionesRect.y, 
-                        instruccionesRect.w, instruccionesRect.h, "INSTRUCCIONES", colorBlanco);
+    SDL_RenderDrawRect(renderer, &rankingRect);
+    dibujarTextoCentrado(renderer, rankingRect.x, rankingRect.y, rankingRect.w, rankingRect.h, "VER RANKING", colorBlanco);
     
-    // Botón SALIR
-    SDL_Rect salirRect = {
-        WINDOW_WIDTH / 2 - botonWidth / 2,
-        startY + 2 * (botonHeight + spacing),
-        botonWidth,
-        botonHeight
-    };
-    SDL_SetRenderDrawColor(renderer, 100, 70, 70, 255);
+    // --- BOTÓN INSTRUCCIONES ---
+    SDL_Rect instruccRect = {WINDOW_WIDTH/2 - botonWidth/2, startY + 2*(botonHeight + spacing), botonWidth, botonHeight};
+    SDL_SetRenderDrawColor(renderer, 70, 70, 100, 255); // Azulado
+    SDL_RenderFillRect(renderer, &instruccRect);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderDrawRect(renderer, &instruccRect);
+    dibujarTextoCentrado(renderer, instruccRect.x, instruccRect.y, instruccRect.w, instruccRect.h, "INSTRUCCIONES", colorBlanco);
+    
+    // --- BOTÓN SALIR ---
+    SDL_Rect salirRect = {WINDOW_WIDTH/2 - botonWidth/2, startY + 3*(botonHeight + spacing), botonWidth, botonHeight};
+    SDL_SetRenderDrawColor(renderer, 100, 70, 70, 255); // Rojizo
     SDL_RenderFillRect(renderer, &salirRect);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderDrawRect(renderer, &salirRect);
-    dibujarTextoCentrado(renderer, salirRect.x, salirRect.y, 
-                        salirRect.w, salirRect.h, "SALIR", colorBlanco);
+    dibujarTextoCentrado(renderer, salirRect.x, salirRect.y, salirRect.w, salirRect.h, "SALIR", colorBlanco);
+
+    // 4. Mostrar último jugador (si existe) al pie de página
+    if (ultimoPuntaje > 0) {
+        char infoAnterior[100];
+        sprintf(infoAnterior, "Ultima partida: %s - %d pts", ultimoJugador, ultimoPuntaje);
+        SDL_Color colorGris = {180, 180, 180, 255};
+        dibujarTextoCentrado(renderer, 0, WINDOW_HEIGHT - 40, WINDOW_WIDTH, 30, infoAnterior, colorGris);
+    }
 }
 
 void manejarClickMenu(int x, int y) {
+    // Debemos usar LAS MISMAS coordenadas que en dibujarMenuPrincipal
     int botonWidth = 300;
-    int botonHeight = 60;
-    int startY = 200;
-    int spacing = 20;
+    int botonHeight = 50;
+    int startY = 160;
+    int spacing = 15;
     
-    // 1. Declaramos jugarRect AQUÍ para poder usarlo en el if
-    SDL_Rect jugarRect = {
-        WINDOW_WIDTH / 2 - botonWidth / 2,
-        startY,
-        botonWidth,
-        botonHeight
-    };
-    
-    
-    // Botón INSTRUCCIONES
-    SDL_Rect instruccionesRect = {
-        WINDOW_WIDTH / 2 - botonWidth / 2,
-        startY + botonHeight + spacing,
-        botonWidth,
-        botonHeight
-    };
-    
-    // Botón SALIR
-    SDL_Rect salirRect = {
-        WINDOW_WIDTH / 2 - botonWidth / 2,
-        startY + 2 * (botonHeight + spacing),
-        botonWidth,
-        botonHeight
-    };
-    
-    // --- LOGICA DE CLICKS ---
-    
-    // Verificar clics
-    if (x >= jugarRect.x && x < jugarRect.x + jugarRect.w &&
-        y >= jugarRect.y && y < jugarRect.y + jugarRect.h) {
+    // Definimos los rectángulos invisibles para detectar el click
+    SDL_Rect jugarRect     = {WINDOW_WIDTH/2 - botonWidth/2, startY, botonWidth, botonHeight};
+    SDL_Rect rankingRect   = {WINDOW_WIDTH/2 - botonWidth/2, startY + botonHeight + spacing, botonWidth, botonHeight};
+    SDL_Rect instruccRect  = {WINDOW_WIDTH/2 - botonWidth/2, startY + 2*(botonHeight + spacing), botonWidth, botonHeight};
+    SDL_Rect salirRect     = {WINDOW_WIDTH/2 - botonWidth/2, startY + 3*(botonHeight + spacing), botonWidth, botonHeight};
+
+    // --- DETECCIÓN DE CLICKS ---
+
+    // 1. JUGAR -> Va a ingreso de nombre
+    if (x >= jugarRect.x && x < jugarRect.x + jugarRect.w && y >= jugarRect.y && y < jugarRect.y + jugarRect.h) {
         estadoActual = ESTADO_INGRESO_NOMBRE;
-        
-        // Activamos el teclado de SDL para poder escribir
         SDL_StartTextInput(); 
-        printf("Cambiando a ingreso de nombre...\n");
     }
     
-    // B. Click en INSTRUCCIONES
-    else if (x >= instruccionesRect.x && x < instruccionesRect.x + instruccionesRect.w &&
-             y >= instruccionesRect.y && y < instruccionesRect.y + instruccionesRect.h) {
+    // 2. RANKING (NUEVO) -> Va a la pantalla de ranking
+    else if (x >= rankingRect.x && x < rankingRect.x + rankingRect.w && y >= rankingRect.y && y < rankingRect.y + rankingRect.h) {
+        estadoActual = ESTADO_RANKING;
+    }
+
+    // 3. INSTRUCCIONES
+    else if (x >= instruccRect.x && x < instruccRect.x + instruccRect.w && y >= instruccRect.y && y < instruccRect.y + instruccRect.h) {
         estadoActual = ESTADO_INSTRUCCIONES;
-        printf("Mostrando instrucciones...\n");
     }
     
-    // C. Click en SALIR
-    else if (x >= salirRect.x && x < salirRect.x + salirRect.w &&
-             y >= salirRect.y && y < salirRect.y + salirRect.h) {
+    // 4. SALIR
+    else if (x >= salirRect.x && x < salirRect.x + salirRect.w && y >= salirRect.y && y < salirRect.y + salirRect.h) {
         estadoActual = ESTADO_SALIR;
-        printf("Saliendo del juego...\n");
     }
 }
 
