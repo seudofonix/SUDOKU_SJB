@@ -4,7 +4,7 @@ gcc -Wall -o sudoku main.c tablero.c graficos.c archivos.c -I/usr/include/SDL2 -
 "./sudoku.exe"
 
 # SUDOKU_SJB
-Implementacion del Sudoku para Algoritmica y Programacion I. Universidad Nacional de la Patagonia San Juan Bosco 2025.
+Implementacion del Sudoku para Algoritmica y Programacion I. Universidad Nacional de la Patagonia San Juan (UNPSJB) Bosco 2025.
 
 # TAREAS
 __1. Nicol Montaño:__
