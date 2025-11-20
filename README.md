@@ -4,7 +4,7 @@ gcc -Wall -o sudoku main.c tablero.c graficos.c archivos.c -I/usr/include/SDL2 -
 "./sudoku.exe"
 
 # SUDOKU_SJB
-Implementacion del Sudoku para Algoritmica y Programacion I. Universidad Nacional de la Patagonia San Juan (UNPSJB) Bosco 2025.
+Implementacion del Sudoku para Algoritmica y Programacion I. Universidad Nacional de la Patagonia San Juan Bosco (UNPSJB) 2025.
 
 # TAREAS
 __1. Nicol Montaño:__
@@ -20,10 +20,10 @@ __1. Nicol Montaño:__
 __2. Evelyn Orellana__
     Tarea Principal:  Verificación de solución única + jugabilidad del usuario
     Descripción:
-    Asegurar que el tablero generado tenga solución única
-    implementacion de victoria del jugador 
-    implementar diferentes niveles de dificuldad colaborar con Evelyn M.
-    implementacion para nombre del jugador
+    Asegurar que el tablero generado tenga solución única (LISTO)
+    implementacion de victoria del jugador (LISTO)
+    colaborar con Evelyn M. para implementar diferentes niveles de dificuldad 
+    implementacion para el nombre del jugador
     
 
 __3. Ignacio Bullón__
