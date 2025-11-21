@@ -3,13 +3,13 @@
 #include "graficos.h"
 #include "tablero.h"
 
-// Variables globales de gráficos
+// Variables globales de graficos
 TTF_Font* font = NULL;
 int numeroSeleccionado = 0;
 int celdaSeleccionadaFila = -1;
 int celdaSeleccionadaColumna = -1;
 
-// Función para inicializar gráficos
+// Funcion para inicializar graficos
 int inicializarGraficos() {
     // INICIALIZAR SDL_ttf
     if (TTF_Init() != 0) {
@@ -30,7 +30,7 @@ int inicializarGraficos() {
     return 1;
 }
 
-// Función para limpiar recursos gráficos
+// Funcion para limpiar recursos graficos
 void limpiarGraficos() {
     if (font) {
         TTF_CloseFont(font);
@@ -38,7 +38,7 @@ void limpiarGraficos() {
     TTF_Quit();
 }
 
-// Función para dibujar texto centrado
+// Funcion para dibujar texto centrado
 void dibujarTextoCentrado(SDL_Renderer* renderer, int x, int y, int w, int h, const char* texto, SDL_Color color) {
     if (!font) return;
     
@@ -71,7 +71,7 @@ void dibujarTextoCentrado(SDL_Renderer* renderer, int x, int y, int w, int h, co
 void dibujarNumeros(SDL_Renderer* renderer) {
     int i, j;
     
-    // VERIFICAR QUE LOS PUNTEROS ESTÁN INICIALIZADOS
+    // VERIFICAR QUE LOS PUNTEROS ESTAN INICIALIZADOS
     if (tablero == NULL || tableroEstado == NULL) {
         printf("Error: Tablero no inicializado en dibujarNumeros\n");
         return;
@@ -80,9 +80,9 @@ void dibujarNumeros(SDL_Renderer* renderer) {
     for (i = 0; i < BOARD_SIZE; i++) {
         for (j = 0; j < BOARD_SIZE; j++) {
             if (tablero[i][j] != 0) {
-                // Determinar color según el estado
+                // Determinar color segun el estado
                 SDL_Color color;
-                if (tableroEstado[i][j] == 1) {  // Números fijos - NEGRO
+                if (tableroEstado[i][j] == 1) {  // Numeros fijos - NEGRO
                     color = (SDL_Color){0, 0, 0, 255};
                 } else if (tableroEstado[i][j] == 2) {  // Usuario correcto - VERDE
                     color = (SDL_Color){0, 255, 0, 255};
@@ -92,7 +92,7 @@ void dibujarNumeros(SDL_Renderer* renderer) {
                     color = (SDL_Color){0, 100, 255, 255};
                 }
                 
-                // Dibujar el número como texto
+                // Dibujar el numero como texto
                 char numStr[2];
                 sprintf(numStr, "%d", tablero[i][j]);
                 
@@ -115,7 +115,7 @@ void dibujarSelectorNumeros(SDL_Renderer* renderer) {
     int numeroSize = 35;
     int spacing = 10;
     
-    // Título del selector
+    // Titulo del selector
     SDL_Rect tituloSelector = {
         selectorX,
         selectorY - 40,
@@ -127,7 +127,7 @@ void dibujarSelectorNumeros(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderDrawRect(renderer, &tituloSelector);
     
-    // Texto del título
+    // Texto del titulo
     SDL_Color colorBlanco = {255, 255, 255, 255};
     dibujarTextoCentrado(renderer, tituloSelector.x, tituloSelector.y, 
                         tituloSelector.w, tituloSelector.h, 
@@ -137,7 +137,7 @@ void dibujarSelectorNumeros(SDL_Renderer* renderer) {
     int totalWidth = 3 * numeroSize + 2 * spacing;
     int startX = selectorX + (SIDEBAR_WIDTH - 40 - totalWidth) / 2;
     
-    // Dibujar cuadritos con números del 1 al 9
+    // Dibujar cuadritos con numeros del 1 al 9
     for (i = 0; i < 9; i++) {
         SDL_Rect numeroRect = {
             startX + (i % 3) * (numeroSize + spacing),
@@ -158,7 +158,7 @@ void dibujarSelectorNumeros(SDL_Renderer* renderer) {
         SDL_SetRenderDrawColor(renderer, 100, 100, 150, 255);
         SDL_RenderDrawRect(renderer, &numeroRect);
         
-        // Dibujar número como texto
+        // Dibujar numero como texto
         char numStr[2];
         sprintf(numStr, "%d", i + 1);
         SDL_Color colorNumero = {50, 50, 100, 255};
@@ -166,7 +166,7 @@ void dibujarSelectorNumeros(SDL_Renderer* renderer) {
                             numeroRect.w, numeroRect.h, numStr, colorNumero);
     }
     
-    // Botón para borrar
+    // Boton para borrar
     SDL_Rect borrarRect = {
         startX,
         selectorY + 3 * (numeroSize + spacing) + 10,
@@ -183,7 +183,7 @@ void dibujarSelectorNumeros(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 150, 50, 50, 255);
     SDL_RenderDrawRect(renderer, &borrarRect);
     
-    // Texto del botón borrar
+    // Texto del boton borrar
     dibujarTextoCentrado(renderer, borrarRect.x, borrarRect.y, 
                         borrarRect.w, borrarRect.h, "BORRAR", colorBlanco);
 }
@@ -240,7 +240,7 @@ void dibujarTableroGrafico(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderDrawRect(renderer, &puntosBox);
     
-    // TÍTULO PRINCIPAL
+    // TITULO PRINCIPAL
     SDL_Rect titulo = {
         MARGIN_X,
         30,
@@ -255,7 +255,7 @@ void dibujarTableroGrafico(SDL_Renderer* renderer) {
     // COLORES PARA LAS CELDAS
     SDL_Color colorCelda1 = {100, 150, 255, 255};  // Azul claro
     SDL_Color colorCelda2 = {255, 255, 255, 255};  // Blanco
-    SDL_Color colorBorde = {80, 80, 120, 255};     // Azul grisáceo
+    SDL_Color colorBorde = {80, 80, 120, 255};     // Azul grisaceo
     
     // DIBUJAR TODAS LAS CELDAS DEL TABLERO
     for (i = 0; i < BOARD_SIZE; i++) {
@@ -285,7 +285,7 @@ void dibujarTableroGrafico(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     for (i = 1; i < BOARD_SIZE; i++) {
         if (i % 3 == 0) {
-            // Líneas verticales gruesas
+            // Lineas verticales gruesas
             SDL_RenderDrawLine(renderer, 
                               MARGIN_X + i * CELL_SIZE, MARGIN_Y,
                               MARGIN_X + i * CELL_SIZE, MARGIN_Y + BOARD_SIZE * CELL_SIZE);
@@ -293,7 +293,7 @@ void dibujarTableroGrafico(SDL_Renderer* renderer) {
                               MARGIN_X + i * CELL_SIZE + 1, MARGIN_Y,
                               MARGIN_X + i * CELL_SIZE + 1, MARGIN_Y + BOARD_SIZE * CELL_SIZE);
             
-            // Líneas horizontales gruesas
+            // Lineas horizontales gruesas
             SDL_RenderDrawLine(renderer,
                               MARGIN_X, MARGIN_Y + i * CELL_SIZE,
                               MARGIN_X + BOARD_SIZE * CELL_SIZE, MARGIN_Y + i * CELL_SIZE);
@@ -304,8 +304,8 @@ void dibujarTableroGrafico(SDL_Renderer* renderer) {
     }
     
     // LLAMAR FUNCIONES DE DIBUJADO ESPECÍFICAS
-    dibujarNumeros(renderer);           // Números dentro del tablero
-    dibujarSelectorNumeros(renderer);   // Selector lateral de números
+    dibujarNumeros(renderer);           // Numeros dentro del tablero
+    dibujarSelectorNumeros(renderer);   // Selector lateral de numeros
     dibujarCeldaSeleccionada(renderer); // Resaltado de celda seleccionada
 }
 
@@ -317,13 +317,13 @@ void manejarClick(int x, int y) {
         int col = (x - MARGIN_X) / CELL_SIZE;
         int fila = (y - MARGIN_Y) / CELL_SIZE;
         
-        // Verificar que la celda no sea fija usando la nueva función
+        // Verificar que la celda no sea fija usando la nueva funcion
         if (!esCeldaFija(fila, col)) {
             celdaSeleccionadaFila = fila;
             celdaSeleccionadaColumna = col;
             printf("Celda seleccionada: (%d, %d)\n", fila, col);
             
-            // Si hay un número seleccionado, colocarlo en la celda
+            // Si hay un numero seleccionado, colocarlo en la celda
             if (numeroSeleccionado > 0) {
                 printf("Colocando número %d en celda (%d, %d)\n", numeroSeleccionado, fila, col);
                 colocarNumero(fila, col, numeroSeleccionado);
@@ -331,7 +331,7 @@ void manejarClick(int x, int y) {
         }
     }
     
-    // Verificar si se hizo click en el selector de números
+    // Verificar si se hizo click en el selector de numeros
     int selectorX = MARGIN_X + BOARD_SIZE * CELL_SIZE + 20;
     int selectorY = MARGIN_Y + 180;
     int numeroSize = 35;
@@ -351,11 +351,11 @@ void manejarClick(int x, int y) {
         
         if (numIndex >= 0 && numIndex < 9) {
             numeroSeleccionado = numIndex + 1;
-            printf("Número seleccionado: %d\n", numeroSeleccionado);
+            printf("Numero seleccionado: %d\n", numeroSeleccionado);
         }
     }
     
-    // Verificar si se hizo click en el botón borrar
+    // Verificar si se hizo click en el boton borrar
     SDL_Rect borrarRect = {
         startX,
         selectorY + 3 * (numeroSize + spacing) + 10,
@@ -366,7 +366,15 @@ void manejarClick(int x, int y) {
     if (x >= borrarRect.x && x < borrarRect.x + borrarRect.w &&
         y >= borrarRect.y && y < borrarRect.y + borrarRect.h) {
         numeroSeleccionado = 0;
-        printf("Selección borrada\n");
+        printf("Seleccion borrada\n");
+        
+// A�ADIR ESTO: Si hay una celda seleccionada, borrar su contenido
+        if (celdaSeleccionadaFila != -1 && celdaSeleccionadaColumna != -1) {
+            if (!esCeldaFija(celdaSeleccionadaFila, celdaSeleccionadaColumna)) {
+                printf("Borrando numero de celda (%d, %d)\n", celdaSeleccionadaFila, celdaSeleccionadaColumna);
+                colocarNumero(celdaSeleccionadaFila, celdaSeleccionadaColumna, 0);
+            }
+        }
     }
 }
 //FUNCION PARA LA VICTORIA DEL GANADOR UNA VEZ COMPLETADO EL SUDOKU
