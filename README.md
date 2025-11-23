@@ -1,8 +1,3 @@
-#INTEGRANTES
-.MONTAÑO EVELIN
-.FERRUFINO EVELYN
-.ORELLANA EVELYN
-.BULLON IGNACIO
 
 # SUDOKU_SJB
 Implementacion del Sudoku para Algoritmica y Programacion I. Universidad Nacional de la Patagonia San Juan Bosco (UNPSJB) 2025.
