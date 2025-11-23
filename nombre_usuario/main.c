@@ -62,7 +62,7 @@ int main() {
                     
                     if (esJuegoCompleto()) {
                         imprimirTablero();
-                        printf("🎉 ¡FELICIDADES, %s! ¡Ganaste!\n", nombreJugador);  //  usa el nombre del jugador
+                        printf("¡FELICIDADES, %s! ¡Ganaste!\n", nombreJugador);  //  usa el nombre del jugador
                         jugando = 0;
                     }
         
@@ -91,3 +91,4 @@ int main() {
     
     return 0;
 }
+
