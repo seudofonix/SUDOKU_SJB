@@ -1,10 +1,18 @@
+#INTEGRANTES
+.MONTAÑO EVELIN
+.FERRUFINO EVELYN
+.ORELLANA EVELYN
+.BULLON IGNACIO
+
+# SUDOKU_SJB
+Implementacion del Sudoku para Algoritmica y Programacion I. Universidad Nacional de la Patagonia San Juan Bosco (UNPSJB) 2025.
+
+
 # COMANDOS DE COMPILACION
 gcc -Wall -o sudoku main.c tablero.c graficos.c archivos.c -I/usr/include/SDL2 -L/usr/lib -lSDL2main -lSDL2 -lSDL2_ttf 
 
 "./sudoku.exe"
 
-# SUDOKU_SJB
-Implementacion del Sudoku para Algoritmica y Programacion I. Universidad Nacional de la Patagonia San Juan Bosco (UNPSJB) 2025.
 
 # TAREAS
 __1. Nicol Montaño:__
