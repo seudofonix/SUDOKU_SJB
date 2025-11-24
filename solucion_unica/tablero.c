@@ -370,7 +370,7 @@ void crearTablero() {
     inicializarTableroVacio();
     
     // Llenar el tablero con números válidos (ahora con solución única)
-    llenarTablero(38); // 38 celdas mostradas (FACIL, por ejemplo)
+    llenarTablero(60); // 38 celdas mostradas (FACIL, por ejemplo)
     
     // Marcar las celdas no vacías como fijas
     for (i = 0; i < 9; i++) {

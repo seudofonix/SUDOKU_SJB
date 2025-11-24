@@ -33,6 +33,7 @@ void dibujarIngresoNombre(SDL_Renderer* renderer);
 void manejarEscrituraNombre(SDL_Event* event); // Ahora inicia el juego
 void dibujarRanking(SDL_Renderer* renderer);
 void manejarClickRanking(int x, int y);
+void dibujarVidasRanking(SDL_Renderer* renderer, int x, int y, int vidas);
 void dibujarInstrucciones(SDL_Renderer* renderer);
 void manejarClickInstrucciones(int x, int y);
 void dibujarGameOver(SDL_Renderer* renderer);  // NUEVA FUNCIÓN

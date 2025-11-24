@@ -280,7 +280,6 @@ void manejarClickGameOver(int x, int y) {
     estadoActual = ESTADO_MENU;
 }
 
-// --- COPIA ESTO AL FINAL DE menu.c ---
 
 void dibujarRanking(SDL_Renderer* renderer) {
     // 1. Fondo
@@ -300,13 +299,14 @@ void dibujarRanking(SDL_Renderer* renderer) {
     int startY = 120;
     int lineHeight = 40;
 
-    // Encabezados
-    dibujarTextoCentrado(renderer, 50, 90, 150, 30, "NOMBRE", colorTexto);
-    dibujarTextoCentrado(renderer, 200, 90, 100, 30, "PUNTOS", colorTexto);
-    dibujarTextoCentrado(renderer, 320, 90, 130, 30, "TIEMPO", colorTexto);
+    // Encabezados - AGREGAR "VIDAS"
+    dibujarTextoCentrado(renderer, 50, 90, 120, 30, "NOMBRE", colorTexto);
+    dibujarTextoCentrado(renderer, 170, 90, 80, 30, "PUNTOS", colorTexto);
+    dibujarTextoCentrado(renderer, 250, 90, 100, 30, "TIEMPO", colorTexto);
+    dibujarTextoCentrado(renderer, 350, 90, 80, 30, "VIDAS", colorTexto); // NUEVO ENCABEZADO
     
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderDrawLine(renderer, 50, 120, 450, 120); // Línea separadora
+    SDL_RenderDrawLine(renderer, 50, 120, 430, 120); // Línea separadora
 
     int i;
     for (i = 0; i < cantidad; i++) {
@@ -321,11 +321,13 @@ void dibujarRanking(SDL_Renderer* renderer) {
         sprintf(bufferTiempo, "%02d:%02d", minutos, segundos);
 
         // Nombre 
-        dibujarTextoCentrado(renderer, 50, startY + i*lineHeight, 150, 30, tops[i].nombre, colorTexto);
+        dibujarTextoCentrado(renderer, 50, startY + i*lineHeight, 120, 30, tops[i].nombre, colorTexto);
         // Puntos
-        dibujarTextoCentrado(renderer, 200, startY + i*lineHeight, 100, 30, bufferPuntos, colorTexto);
+        dibujarTextoCentrado(renderer, 170, startY + i*lineHeight, 80, 30, bufferPuntos, colorTexto);
         // Tiempo
-        dibujarTextoCentrado(renderer, 320, startY + i*lineHeight, 130, 30, bufferTiempo, colorTexto);
+        dibujarTextoCentrado(renderer, 250, startY + i*lineHeight, 100, 30, bufferTiempo, colorTexto);
+        // VIDAS - NUEVO: Mostrar corazones pixelados para las vidas
+        dibujarVidasRanking(renderer, 350, startY + i*lineHeight, tops[i].vidas);
     }
 
     // 5. Botón Volver
@@ -345,3 +347,53 @@ void manejarClickRanking(int x, int y) {
         estadoActual = ESTADO_MENU;
     }
 }
+
+// NUEVA FUNCIÓN: Dibujar corazones de vidas en el ranking
+void dibujarVidasRanking(SDL_Renderer* renderer, int x, int y, int vidas) {
+    int vidaSize = 20;  // Tamaño más pequeño para el ranking
+    int spacing = 4;
+    
+    // Dibujar corazones pixelados
+    int i;
+    for (i = 0; i < 3; i++) {
+        int posX = x + i * (vidaSize + spacing);
+        int posY = y + 5; // Centrar verticalmente
+        
+        // Color del corazón
+        if (i < vidas) {
+            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // Rojo
+        } else {
+            SDL_SetRenderDrawColor(renderer, 60, 60, 60, 255); // Gris oscuro
+        }
+        
+        // Patrón de corazón 6x6 pixelado (más pequeño para ranking)
+        int pixelSize = vidaSize / 6;
+        
+        // Definir el patrón del corazón reducido (1 = dibujar pixel, 0 = vacío)
+        int heartPattern[6][6] = {
+            {0,1,1,0,1,1},
+            {1,1,1,1,1,1},
+            {1,1,1,1,1,1},
+            {0,1,1,1,1,0},
+            {0,0,1,1,0,0},
+            {0,0,0,0,0,0}
+        };
+        
+        // Dibujar el corazón pixel por pixel
+        int row, col;
+        for (row = 0; row < 6; row++) {
+            for (col = 0; col < 6; col++) {
+                if (heartPattern[row][col] == 1) {
+                    SDL_Rect pixel = {
+                        posX + col * pixelSize,
+                        posY + row * pixelSize,
+                        pixelSize,
+                        pixelSize
+                    };
+                    SDL_RenderFillRect(renderer, &pixel);
+                }
+            }
+        }
+    }
+}
+

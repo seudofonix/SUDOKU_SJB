@@ -4,6 +4,7 @@
 #include <math.h>
 #include "archivos.h"
 #include "tiempo.h"
+#include "menu.h"
 
 const char NOMBRE_ARCHIVO[] = "rankings.txt";
 const int PUNTUACION_MAXIMA = 1500;
@@ -44,9 +45,11 @@ int calcularPuntaje(double tiempoFinal) {
 
 void guardarPuntaje(const char* nombre, int puntaje) {
     // Usar el tiempo actual del juego
-   // extern double tiempoTranscurrido;
     double tiempo = tiempoTranscurrido;
-	
+    
+	//usar vidasRestantes global
+    int vidas = vidasRestantes;
+    
 	// Primero leer todos los puntajes existentes
     RegistroRanking rankings[200];
     int count = 0;
@@ -54,7 +57,9 @@ void guardarPuntaje(const char* nombre, int puntaje) {
     
     if (archivo != NULL) {
         // Leer todos los registros existentes
-        while (count < 200 && fscanf(archivo, "%20s %d %lf", rankings[count].nombre, &rankings[count].puntaje, &rankings[count].tiempo) == 3) {
+         while (count < 200 && fscanf(archivo, "%20s %d %lf %d", 
+               rankings[count].nombre, &rankings[count].puntaje, 
+               &rankings[count].tiempo, &rankings[count].vidas) == 4) {
             count++;
         }
         fclose(archivo);
@@ -62,14 +67,31 @@ void guardarPuntaje(const char* nombre, int puntaje) {
     
     // Si no leímos nada, intentar con formato viejo (nombre, puntos)
         if (count == 0) {
-            rewind(archivo);
-            while (count < 200 && fscanf(archivo, "%20s %d", 
-                rankings[count].nombre, &rankings[count].puntaje) == 2) {
-                rankings[count].tiempo = 600.0; // Tiempo por defecto: 10 minutos
+        archivo = fopen(NOMBRE_ARCHIVO, "r");
+        if (archivo != NULL) {
+            while (count < 200 && fscanf(archivo, "%20s %d %lf", 
+                   rankings[count].nombre, &rankings[count].puntaje, 
+                   &rankings[count].tiempo) == 3) {
+                rankings[count].vidas = 3; // Vidas por defecto para registros viejos
                 count++;
             }
+            fclose(archivo);
         }
-        fclose(archivo);
+    }
+    
+    // Si aún no leímos nada, intentar formato más viejo (solo nombre y puntos)
+    if (count == 0) {
+        archivo = fopen(NOMBRE_ARCHIVO, "r");
+        if (archivo != NULL) {
+            while (count < 200 && fscanf(archivo, "%20s %d", 
+                   rankings[count].nombre, &rankings[count].puntaje) == 2) {
+                rankings[count].tiempo = 600.0; // Tiempo por defecto: 10 minutos
+                rankings[count].vidas = 3; // Vidas por defecto
+                count++;
+            }
+            fclose(archivo);
+        }
+    }
     
     // Buscar si el jugador ya existe
     int jugadorEncontrado = 0;
@@ -77,43 +99,50 @@ void guardarPuntaje(const char* nombre, int puntaje) {
     for (i = 0; i < count; i++) {
         if (strcmp(rankings[i].nombre, nombre) == 0) {
             // Actualizar si mejor puntaje o mismo puntaje con menos tiempo
-            if (puntaje > rankings[i].puntaje || (puntaje == rankings[i].puntaje && tiempo < rankings[i].tiempo)) {
+            if (puntaje > rankings[i].puntaje || 
+                (puntaje == rankings[i].puntaje && tiempo < rankings[i].tiempo)) {
                 rankings[i].puntaje = puntaje;
                 rankings[i].tiempo = tiempo;
-                printf("Actualizado: %s - %d pts en %.0fs\n", nombre, puntaje, tiempo);
+                rankings[i].vidas = vidas; // NUEVO: actualizar vidas
+                printf("Actualizado: %s - %d pts en %.0fs con %d vidas\n", 
+                       nombre, puntaje, tiempo, vidas);
             } else {
                 printf("%s ya tiene mejor puntaje: %d pts vs %d pts\n", 
-                    nombre, rankings[i].puntaje, puntaje);
+                       nombre, rankings[i].puntaje, puntaje);
             }
             jugadorEncontrado = 1;
             break;
         }
     }
     
-     // Si no existe, agregar nuevo jugador
+    // Si no existe, agregar nuevo jugador
     if (!jugadorEncontrado) {
         if (count < 200) {
             strcpy(rankings[count].nombre, nombre);
             rankings[count].puntaje = puntaje;
             rankings[count].tiempo = tiempo;
+            rankings[count].vidas = vidas; // NUEVO: guardar vidas
             count++;
-            printf("Nuevo jugador: %s con %d puntos en %.0f segundos\n", nombre, puntaje, tiempo);
+            printf("Nuevo jugador: %s con %d puntos en %.0f segundos y %d vidas\n", 
+                   nombre, puntaje, tiempo, vidas);
         }
     }
     
     // Ordenar el arreglo
     qsort(rankings, count, sizeof(RegistroRanking), compararRegistros);
     
-    // Reescribir todo el archivo
+    // Reescribir todo el archivo - ACTUALIZADO para incluir vidas
     archivo = fopen(NOMBRE_ARCHIVO, "w");
     if (archivo == NULL) {
         printf("Error: No se pudo abrir el archivo de rankings para escribir.\n");
         return;
     }
     
-    // Guardar todos los registros ordenados
+    // Guardar todos los registros ordenados - AHORA CON VIDAS
     for (i = 0; i < count; i++) {
-        fprintf(archivo, "%s %d %.2f\n", rankings[i].nombre, rankings[i].puntaje, rankings[i].tiempo);
+        fprintf(archivo, "%s %d %.2f %d\n", 
+                rankings[i].nombre, rankings[i].puntaje, 
+                rankings[i].tiempo, rankings[i].vidas);
     }
     fclose(archivo);
 }
@@ -125,12 +154,12 @@ int leerTopRankings(RegistroRanking* rankingArray, int maxCantidad) {
         printf("Creando archivo de rankings con datos de ejemplo...\n");
         archivo = fopen(NOMBRE_ARCHIVO, "w");
         if (archivo) {
-            // Crear algunos datos de ejemplo con tiempo
-            fprintf(archivo, "melisa 1500 300.00\n");
-            fprintf(archivo, "evelyn 1500 350.00\n"); 
-            fprintf(archivo, "katsuki 1000 450.00\n");
-            fprintf(archivo, "naturo 1000 500.00\n");
-            fprintf(archivo, "hinata 500 600.00\n");
+            // Crear algunos datos de ejemplo con tiempo Y VIDAS
+            fprintf(archivo, "melisa 1500 300.00 3\n");
+            fprintf(archivo, "evelyn 1500 350.00 2\n"); 
+            fprintf(archivo, "katsuki 1000 450.00 1\n");
+            fprintf(archivo, "naturo 1000 500.00 3\n");
+            fprintf(archivo, "hinata 500 600.00 0\n");
             fclose(archivo);
             
             // Volver a abrir para leer
@@ -146,18 +175,31 @@ int leerTopRankings(RegistroRanking* rankingArray, int maxCantidad) {
     RegistroRanking buffer[200];
     int count = 0;
     
-    // CORREGIR: Leer con el formato correcto
-    while (count < 200 && fscanf(archivo, "%20s %d %lf", 
-           buffer[count].nombre, &buffer[count].puntaje, &buffer[count].tiempo) == 3) {
+    // LEER CON EL FORMATO ACTUALIZADO (con vidas)
+    while (count < 200 && fscanf(archivo, "%20s %d %lf %d", 
+           buffer[count].nombre, &buffer[count].puntaje, 
+           &buffer[count].tiempo, &buffer[count].vidas) == 4) {
         count++;
     }
     
-    // Si no funciona con formato nuevo, intentar formato viejo
+    // Si no funciona con formato nuevo, intentar formato viejo (sin vidas)
+    if (count == 0) {
+        rewind(archivo);
+        while (count < 200 && fscanf(archivo, "%20s %d %lf", 
+               buffer[count].nombre, &buffer[count].puntaje, 
+               &buffer[count].tiempo) == 3) {
+            buffer[count].vidas = 3; // Vidas por defecto para registros viejos
+            count++;
+        }
+    }
+    
+    // Si aún no funciona, intentar formato más viejo (solo nombre y puntos)
     if (count == 0) {
         rewind(archivo);
         while (count < 200 && fscanf(archivo, "%20s %d", 
                buffer[count].nombre, &buffer[count].puntaje) == 2) {
             buffer[count].tiempo = 600.0; // Tiempo por defecto
+            buffer[count].vidas = 3; // Vidas por defecto
             count++;
         }
     }
