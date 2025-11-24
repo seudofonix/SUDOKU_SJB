@@ -3,6 +3,7 @@
 #include "menu.h"
 #include "graficos.h"
 #include "archivos.h" 
+#include "tiempo.h"
 
 // Definir la variable global
 EstadoJuego estadoActual = ESTADO_MENU;
@@ -157,8 +158,16 @@ void manejarEscrituraNombre(SDL_Event* event) {
         else if (event->key.keysym.sym == SDLK_RETURN) {
             if (strlen(nombreJugador) > 0) {
                 SDL_StopTextInput();
-                estadoActual = ESTADO_JUGANDO; // <-- AHORA VAMOS A JUGAR
-                crearTablero(); // Generamos un tablero nuevo
+                
+                // REINICIAR VIDAS Y PUNTUACIÓN AL INICIAR NUEVA PARTIDA
+                vidasRestantes = 3;
+                puntuacionActual = 1500;
+                reiniciarTemporizador(); 
+        
+        		estadoActual = ESTADO_JUGANDO;
+        		crearTablero(); // Generamos un tablero nuevo
+        
+        		printf("Nueva partida iniciada para: %s\n", nombreJugador);
             }
         }
     }
@@ -201,17 +210,17 @@ void dibujarInstrucciones(SDL_Renderer* renderer) {
     dibujarTextoCentrado(renderer, textoRect.x, textoRect.y + 20, 
                         textoRect.w, 30, "REGLAS DEL SUDOKU:", colorBlanco);
     dibujarTextoCentrado(renderer, textoRect.x, textoRect.y + 60, 
-                        textoRect.w, 30, "- Llena el tablero 9x9 con nÃºmeros 1-9", colorBlanco);
+                        textoRect.w, 30, "- Llena el tablero 9x9 con numeros 1-9", colorBlanco);
     dibujarTextoCentrado(renderer, textoRect.x, textoRect.y + 90, 
-                        textoRect.w, 30, "- No repetir nÃºmeros en filas", colorBlanco);
+                        textoRect.w, 30, "- No repetir numeros en filas", colorBlanco);
     dibujarTextoCentrado(renderer, textoRect.x, textoRect.y + 120, 
-                        textoRect.w, 30, "- No repetir nÃºmeros en columnas", colorBlanco);
+                        textoRect.w, 30, "- No repetir numeros en columnas", colorBlanco);
     dibujarTextoCentrado(renderer, textoRect.x, textoRect.y + 150, 
-                        textoRect.w, 30, "- No repetir nÃºmeros en bloques 3x3", colorBlanco);
+                        textoRect.w, 30, "- No repetir numeros en bloques 3x3", colorBlanco);
     dibujarTextoCentrado(renderer, textoRect.x, textoRect.y + 180, 
-                        textoRect.w, 30, "- Clic en celda + seleccionar nÃºmero", colorBlanco);
+                        textoRect.w, 30, "- Clic en celda + seleccionar numero", colorBlanco);
     dibujarTextoCentrado(renderer, textoRect.x, textoRect.y + 210, 
-                        textoRect.w, 30, "- Â¡Completa todo el tablero!", colorBlanco);
+                        textoRect.w, 30, "- ¡Completa todo el tablero!", colorBlanco);
     
     // BotÃ³n VOLVER
     SDL_Rect volverRect = {
@@ -225,7 +234,7 @@ void dibujarInstrucciones(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderDrawRect(renderer, &volverRect);
     dibujarTextoCentrado(renderer, volverRect.x, volverRect.y, 
-                        volverRect.w, volverRect.h, "VOLVER AL MENÃš", colorBlanco);
+                        volverRect.w, volverRect.h, "VOLVER AL MENU", colorBlanco);
 }
 
 void manejarClickInstrucciones(int x, int y) {
@@ -242,6 +251,34 @@ void manejarClickInstrucciones(int x, int y) {
     }
 }
 
+// NUEVA FUNCIÓN: Dibujar pantalla de Game Over
+void dibujarGameOver(SDL_Renderer* renderer) {
+    // Fondo negro
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+    
+    // Texto "GAME OVER" grande en rojo
+    SDL_Color rojo = {255, 0, 0, 255};
+    dibujarTextoCentrado(renderer, 0, 160, WINDOW_WIDTH, 80, "GAME OVER", rojo);
+    
+    // Mensaje explicativo
+    SDL_Color blanco = {255, 255, 255, 255};
+    dibujarTextoCentrado(renderer, 0, 250, WINDOW_WIDTH, 40, "Te quedaste sin vidas!", blanco);
+    
+    // Mostrar puntuación final
+    char puntuacionStr[50];
+    sprintf(puntuacionStr, "Puntuacion final: %d pts", puntuacionActual);
+    dibujarTextoCentrado(renderer, 0, 300, WINDOW_WIDTH, 30, puntuacionStr, blanco);
+    
+    // Instrucción para continuar
+    dibujarTextoCentrado(renderer, 0, 350, WINDOW_WIDTH, 30, "Haz clic para volver al menu", blanco);
+}
+
+// NUEVA FUNCIÓN: Manejar click en pantalla de Game Over
+void manejarClickGameOver(int x, int y) {
+    // Cualquier click vuelve al menú
+    estadoActual = ESTADO_MENU;
+}
 
 // --- COPIA ESTO AL FINAL DE menu.c ---
 
@@ -250,13 +287,13 @@ void dibujarRanking(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 30, 30, 40, 255);
     SDL_RenderClear(renderer);
 
-    // 2. TÃ­tulo
+    // 2. Título
     SDL_Color colorTitulo = {255, 100, 100, 255};
     dibujarTextoCentrado(renderer, 0, 30, WINDOW_WIDTH, 60, "MEJORES PUNTAJES", colorTitulo);
 
-    // 3. Leer Ranking (Necesitas tener implementado leerTopRankings en archivos.c)
-    RegistroRanking tops[5];
-    int cantidad = leerTopRankings(tops, 5); 
+    // 3. Leer Ranking
+    RegistroRanking tops[10];
+    int cantidad = leerTopRankings(tops, 10); 
 
     // 4. Dibujar Tabla
     SDL_Color colorTexto = {255, 255, 255, 255};
@@ -264,24 +301,34 @@ void dibujarRanking(SDL_Renderer* renderer) {
     int lineHeight = 40;
 
     // Encabezados
-    dibujarTextoCentrado(renderer, 50, 90, 200, 30, "NOMBRE", colorTexto);
-    dibujarTextoCentrado(renderer, 300, 90, 100, 30, "PUNTOS", colorTexto);
+    dibujarTextoCentrado(renderer, 50, 90, 150, 30, "NOMBRE", colorTexto);
+    dibujarTextoCentrado(renderer, 200, 90, 100, 30, "PUNTOS", colorTexto);
+    dibujarTextoCentrado(renderer, 320, 90, 130, 30, "TIEMPO", colorTexto);
     
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderDrawLine(renderer, 50, 120, 450, 120); // LÃ­nea separadora
+    SDL_RenderDrawLine(renderer, 50, 120, 450, 120); // Línea separadora
 
     int i;
     for (i = 0; i < cantidad; i++) {
         char bufferPuntos[20];
+        char bufferTiempo[20];
+        
         sprintf(bufferPuntos, "%d", tops[i].puntaje);
+        
+        // Formatear tiempo en minutos:segundos
+        int minutos = (int)tops[i].tiempo / 60;
+        int segundos = (int)tops[i].tiempo % 60;
+        sprintf(bufferTiempo, "%02d:%02d", minutos, segundos);
 
         // Nombre 
-        dibujarTextoCentrado(renderer, 50, startY + i*lineHeight, 200, 30, tops[i].nombre, colorTexto);
+        dibujarTextoCentrado(renderer, 50, startY + i*lineHeight, 150, 30, tops[i].nombre, colorTexto);
         // Puntos
-        dibujarTextoCentrado(renderer, 300, startY + i*lineHeight, 100, 30, bufferPuntos, colorTexto);
+        dibujarTextoCentrado(renderer, 200, startY + i*lineHeight, 100, 30, bufferPuntos, colorTexto);
+        // Tiempo
+        dibujarTextoCentrado(renderer, 320, startY + i*lineHeight, 130, 30, bufferTiempo, colorTexto);
     }
 
-    // 5. BotÃ³n Volver
+    // 5. Botón Volver
     SDL_Rect btnVolver = {WINDOW_WIDTH/2 - 100, WINDOW_HEIGHT - 80, 200, 50};
     SDL_SetRenderDrawColor(renderer, 100, 100, 150, 255);
     SDL_RenderFillRect(renderer, &btnVolver);

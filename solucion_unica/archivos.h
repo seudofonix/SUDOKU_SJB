@@ -5,6 +5,7 @@
 typedef struct {
     char nombre[21]; // 20 caracteres + null
     int puntaje;
+    double tiempo;
 } RegistroRanking;
 
 // Funciones que el main y el menu necesitan

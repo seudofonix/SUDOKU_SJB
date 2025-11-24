@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include "graficos.h"
 #include "tablero.h"
+#include "tiempo.h"
 
 // Variables globales de graficos
 TTF_Font* font = NULL;
@@ -202,7 +203,83 @@ void dibujarCeldaSeleccionada(SDL_Renderer* renderer) {
     }
 }
 
+void dibujarBarraVidas(SDL_Renderer* renderer) {
+     int vidaSize = 28;  // Tamaño de cada corazón
+    int spacing = 6;
+    int startX = MARGIN_X + BOARD_SIZE * CELL_SIZE + 20;
+    int startY = 30;
+    
+    // Título de vidas
+    SDL_Rect tituloVidas = {
+        startX,
+        startY,
+        SIDEBAR_WIDTH - 40,
+        20
+    };
+    SDL_SetRenderDrawColor(renderer, 150, 50, 50, 255);
+    SDL_RenderFillRect(renderer, &tituloVidas);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderDrawRect(renderer, &tituloVidas);
+    
+    SDL_Color colorBlanco = {255, 255, 255, 255};
+    dibujarTextoCentrado(renderer, tituloVidas.x, tituloVidas.y, 
+                        tituloVidas.w, tituloVidas.h, "VIDAS", colorBlanco);
+    
+    // Centrar las vidas horizontalmente
+    int totalWidth = 3 * vidaSize + 2 * spacing;
+    int centerX = startX + (SIDEBAR_WIDTH - 40 - totalWidth) / 2;
+    
+    // Dibujar corazones pixelados
+    int i;
+    for (i = 0; i < 3; i++) {
+        int x = centerX + i * (vidaSize + spacing);
+        int y = startY + 25;
+        
+        // Color del corazón
+        if (i < vidasRestantes) {
+            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // Rojo retro
+        } else {
+            SDL_SetRenderDrawColor(renderer, 60, 60, 60, 255); // Gris oscuro
+        }
+        
+        // Patrón de corazón 8x8 pixelado
+        int pixelSize = vidaSize / 8;
+        
+        // Definir el patrón del corazón (1 = dibujar pixel, 0 = vacío)
+        int heartPattern[8][8] = {
+            {0,1,1,0,0,1,1,0},
+            {1,1,1,1,1,1,1,1},
+            {1,1,1,1,1,1,1,1},
+            {1,1,1,1,1,1,1,1},
+            {0,1,1,1,1,1,1,0},
+            {0,0,1,1,1,1,0,0},
+            {0,0,0,1,1,0,0,0},
+            {0,0,0,0,0,0,0,0}
+        };
+        
+        // Dibujar el corazón pixel por pixel
+        int row, col;
+        for (row = 0; row < 8; row++) {
+            for (col = 0; col < 8; col++) {
+                if (heartPattern[row][col] == 1) {
+                    SDL_Rect pixel = {
+                        x + col * pixelSize,
+                        y + row * pixelSize,
+                        pixelSize,
+                        pixelSize
+                    };
+                    SDL_RenderFillRect(renderer, &pixel);
+                }
+            }
+        }
+    }
+}
+
 void dibujarTableroGrafico(SDL_Renderer* renderer) {
+	
+	SDL_SetRenderDrawColor(renderer, 40, 44, 52, 255);
+    SDL_RenderClear(renderer);
+	
     int i, j;
     
     // 1. Fondo del panel lateral (degradado)
@@ -216,10 +293,13 @@ void dibujarTableroGrafico(SDL_Renderer* renderer) {
                       MARGIN_X + BOARD_SIZE * CELL_SIZE + SIDEBAR_WIDTH, MARGIN_Y + y);
     }
     
-    // TIMER (caja en panel lateral)
+    //Barra de vidas ARRIBA DEL TODO
+    dibujarBarraVidas(renderer);
+    
+    // TEMPORIZADOR (EN SU POSICIÓN ORIGINAL - SIN CAMBIOS)
     SDL_Rect timerBox = {
         MARGIN_X + BOARD_SIZE * CELL_SIZE + 20,
-        MARGIN_Y + 30,
+        MARGIN_Y + 30, // POSICIÓN ORIGINAL
         SIDEBAR_WIDTH - 40,
         50
     };
@@ -228,10 +308,16 @@ void dibujarTableroGrafico(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderDrawRect(renderer, &timerBox);
     
-    // PUNTOS (caja en panel lateral)
+    // MOSTRAR EL TIEMPO (usando la nueva función)
+	char textoTiempo[32];
+	formatearTiempo(textoTiempo, sizeof(textoTiempo));
+	SDL_Color colorBlanco = {255, 255, 255, 255};
+	dibujarTextoCentrado(renderer, timerBox.x, timerBox.y, timerBox.w, timerBox.h, textoTiempo, colorBlanco);
+    
+    // PUNTOS (POSICIÓN ORIGINAL - SIN CAMBIOS)
     SDL_Rect puntosBox = {
         MARGIN_X + BOARD_SIZE * CELL_SIZE + 20,
-        MARGIN_Y + 100,
+        MARGIN_Y + 100, // POSICIÓN ORIGINAL
         SIDEBAR_WIDTH - 40,
         50
     };
@@ -239,6 +325,11 @@ void dibujarTableroGrafico(SDL_Renderer* renderer) {
     SDL_RenderFillRect(renderer, &puntosBox);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderDrawRect(renderer, &puntosBox);
+    
+    // Mostrar puntuación actual
+    char puntosStr[20];
+    sprintf(puntosStr, "%d pts", puntuacionActual);
+    dibujarTextoCentrado(renderer, puntosBox.x, puntosBox.y, puntosBox.w, puntosBox.h, puntosStr, colorBlanco);
     
     // TITULO PRINCIPAL
     SDL_Rect titulo = {
@@ -303,7 +394,7 @@ void dibujarTableroGrafico(SDL_Renderer* renderer) {
         }
     }
     
-    // LLAMAR FUNCIONES DE DIBUJADO ESPECÃFICAS
+    // LLAMAR FUNCIONES DE DIBUJADO ESPECiFICAS
     dibujarNumeros(renderer);           // Numeros dentro del tablero
     dibujarSelectorNumeros(renderer);   // Selector lateral de numeros
     dibujarCeldaSeleccionada(renderer); // Resaltado de celda seleccionada

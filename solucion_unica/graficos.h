@@ -19,6 +19,10 @@ extern int numeroSeleccionado;
 extern int celdaSeleccionadaFila;
 extern int celdaSeleccionadaColumna;
 
+// SOLO DECLARAR como extern (definidas en main.c)
+extern int vidasRestantes;
+extern int puntuacionActual;
+
 // Funciones de inicialización
 int inicializarGraficos();
 void limpiarGraficos();
@@ -30,6 +34,7 @@ void dibujarSelectorNumeros(SDL_Renderer* renderer);
 void dibujarCeldaSeleccionada(SDL_Renderer* renderer);
 void dibujarTableroGrafico(SDL_Renderer* renderer);
 void dibujarPantallaVictoria(SDL_Renderer* renderer);
+void dibujarBarraVidas(SDL_Renderer* renderer);  // NUEVA FUNCIÓN
 
 // Función de manejo de eventos
 void manejarClick(int x, int y);

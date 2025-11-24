@@ -9,12 +9,17 @@
 #include "archivos.h"
 #include "tablero.h"
 #include "graficos.h"
-#include "menu.h" // <--- Importante: Incluimos el menú
+#include "menu.h" //  Incluimos el menu
+#include "tiempo.h" // incluimos el tiempo
+
+// NUEVAS VARIABLES PARA VIDAS
+int vidasRestantes = 3;
+int puntuacionActual = 1500;
 
 int main(int argc, char* argv[]) {
     printf("Iniciando Sudoku Master...\n");
     
-    // --- 1. INICIALIZACIÓN DE SDL Y SISTEMAS ---
+    // --- 1. INICIALIZACION DE SDL Y SISTEMAS ---
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         printf("Error SDL2: %s\n", SDL_GetError());
         return -1;
@@ -41,20 +46,20 @@ int main(int argc, char* argv[]) {
     
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     
-    // Inicializar la lógica del tablero (memoria)
+    // Inicializar la logica del tablero (memoria)
     //crearTablero();
     //printf("Sistema listo.\n");
     
     // Variables del bucle principal
     int running = 1;
     SDL_Event event;
-    estadoActual = ESTADO_MENU; // Empezamos en menú
+    estadoActual = ESTADO_MENU; // Empezamos en menu
 
     while (running) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) running = 0;
 
-            // Lógica de inputs según estado
+            // logica de inputs segun estado
             if (estadoActual == ESTADO_INGRESO_NOMBRE) {
                 manejarEscrituraNombre(&event); // Detecta Enter para ir a JUGANDO
             }
@@ -74,6 +79,9 @@ int main(int argc, char* argv[]) {
                         case ESTADO_INSTRUCCIONES:
                             manejarClickInstrucciones(event.button.x, event.button.y);
                             break;
+                        case ESTADO_GAME_OVER:  // NUEVO CASO
+                            manejarClickGameOver(event.button.x, event.button.y);
+                            break;
                         default: break;
                     }
                 }
@@ -81,29 +89,45 @@ int main(int argc, char* argv[]) {
         }
 
         if (estadoActual == ESTADO_SALIR) running = 0;
+        
+		if (estadoActual == ESTADO_JUGANDO) {
+    		// Actualizar el tiempo transcurrido usando la nueva funci�n
+    		actualizarTiempo();
+            
+            //Verificar si se qued� sin vidas durante el juego
+            if (vidasRestantes == 0) {
+                estadoActual = ESTADO_GAME_OVER;
+            }
+        }
 
         // LOGICA DE VICTORIA (Modificada)
         if (estadoActual == ESTADO_JUGANDO && esJuegoCompleto()) {
             
-            // 1. Calcular puntaje (ejemplo)
-            // int puntos = calcularPuntaje(tiempo); 
-            int puntos = 1500; // Valor ejemplo, usa tu lógica de tiempo
+		// Calcular puntaje FINAL considerando tiempo y vidas
+    	int puntosFinal = calcularPuntaje(tiempoTranscurrido);
+    
+   		// Aplicar penalizaci�n por vidas perdidas
+    	int vidasPerdidas = 3 - vidasRestantes;
+    	puntosFinal -= vidasPerdidas * 100; // 100 puntos por vida perdida
+    
+    	// Asegurar que no sea negativo
+    	if (puntosFinal < 0) puntosFinal = 0;
+    
+    	// CORREGIR: Llamar sin el par�metro tiempo
+    	guardarPuntaje(nombreJugador, puntosFinal);
+    
+    	// Actualizar variables para mostrar en el menu despues
+    	strcpy(ultimoJugador, nombreJugador);
+    	ultimoPuntaje = puntosFinal;
 
-            // 2. Guardar AUTOMÁTICAMENTE (Ya tenemos el nombre del inicio)
-            guardarPuntaje(nombreJugador, puntos);
-            
-            // 3. Actualizar variables para mostrar en el menú después
-            strcpy(ultimoJugador, nombreJugador);
-            ultimoPuntaje = puntos;
+    	// Mostrar Pantalla de Victoria momentanea
+    	dibujarPantallaVictoria(renderer);
+    	SDL_RenderPresent(renderer);
+    	SDL_Delay(2000); // Esperar 2 segundos para que vea que gano
 
-            // 4. Mostrar Pantalla de Victoria momentánea
-            dibujarPantallaVictoria(renderer);
-            SDL_RenderPresent(renderer);
-            SDL_Delay(2000); // Esperar 2 segundos para que vea que ganó
-
-            // 5. Ir directo al Ranking
-            estadoActual = ESTADO_RANKING;
-        }
+    	// Ir directo al Ranking
+    	estadoActual = ESTADO_RANKING;
+	}	
 
         // DIBUJADO
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -111,7 +135,7 @@ int main(int argc, char* argv[]) {
 
         switch (estadoActual) {
             case ESTADO_MENU:
-                dibujarMenuPrincipal(renderer); // Ahora muestra el último puntaje
+                dibujarMenuPrincipal(renderer);
                 break;
             case ESTADO_INGRESO_NOMBRE:
                 dibujarIngresoNombre(renderer);
@@ -126,6 +150,9 @@ int main(int argc, char* argv[]) {
                 break;
             case ESTADO_INSTRUCCIONES:
                 dibujarInstrucciones(renderer);
+                break;
+            case ESTADO_GAME_OVER:  // NUEVO CASO
+                dibujarGameOver(renderer);
                 break;
         }
 

@@ -1,10 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 #include "tablero.h"
+#include "menu.h"
 
 // Definimos un límite, ya que solo necesitamos saber si tiene 1 o > 1 soluciones
 #define MAXIMO_SOLUCIONES 2 
+
+extern int vidasRestantes;
+extern int puntuacionActual;
+extern char nombreJugador[21];
+extern char ultimoJugador[21];
+extern int ultimoPuntaje;
 
 //------------- ---   CREACION TABLERO-------- 
 
@@ -305,6 +313,28 @@ void colocarNumero(int fila, int columna, int numero) {
     } else {
         // Actualizar a correcto/incorrecto según la solución
         actualizarEstadoCelda(fila, columna);
+        
+        // NUEVO: Restar vida si el número es incorrecto
+        if (tableroEstado[fila][columna] == 3) { // 3 = incorrecto
+            if (vidasRestantes > 0) {
+                vidasRestantes--;
+                puntuacionActual -= 500; // Restar 500 puntos por error
+                
+                printf("¡Número incorrecto! Vidas restantes: %d\n", vidasRestantes);
+                
+                // Si se quedó sin vidas, guardar puntuación y cambiar estado
+                if (vidasRestantes == 0) {
+                    printf("¡Game Over! Puntuación final: %d\n", puntuacionActual);
+                    
+                    // Guardar puntuación actual (aunque sea 0)
+                    guardarPuntaje(nombreJugador, puntuacionActual);
+                    
+                    // Actualizar variables para mostrar en el menú después
+                    strcpy(ultimoJugador, nombreJugador);
+                    ultimoPuntaje = puntuacionActual;
+                }
+            }
+        }
     }
 }
 
