@@ -3,7 +3,7 @@
 Implementacion del Sudoku para Algoritmica y Programacion I. Universidad Nacional de la Patagonia San Juan Bosco (UNPSJB) 2025.
 
 # COMANDOS DE COMPILACION
-gcc -Wall -o sudoku main.c tablero.c graficos.c archivos.c -I/usr/include/SDL2 -L/usr/lib -lSDL2main -lSDL2 -lSDL2_ttf 
+gcc -Wall -o sudoku main.c tablero.c graficos.c archivos.c menu.c tiempo.c -I/usr/include/SDL2 -L/usr/lib -lSDL2main -lSDL2 -lSDL2_ttf 
 
 "./sudoku.exe"
 
