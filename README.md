@@ -1,11 +1,11 @@
 # SUDOKU
 
-##Integrantes 
+## Integrantes 
 - Nicol Montaño
 - Evelyn Orellana  
 - Ignacio Bullón
 - Evelyn Fernandez
-- 
+  
 # SUDOKU_SJB
 Implementacion del Sudoku para Algoritmica y Programacion I. Universidad Nacional de la Patagonia San Juan Bosco (UNPSJB) 2025.
 
