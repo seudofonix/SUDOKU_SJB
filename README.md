@@ -1,4 +1,5 @@
 # SUDOKU
+![Sudoku](./sudoku.png)
 
 ## Integrantes 
 - Nicol Montaño
