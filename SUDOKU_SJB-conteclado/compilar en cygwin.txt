@@ -1,3 +1,0 @@
-cd Trabajos_Practicos_2025/SUDOKU_SJB-conteclado
-gcc -o sudoku main.c tablero.c graficos.c
-/.sudoku
