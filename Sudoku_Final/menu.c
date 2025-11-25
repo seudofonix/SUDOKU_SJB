@@ -18,8 +18,8 @@ void dibujarMenuPrincipal(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 40, 44, 52, 255);
     SDL_RenderClear(renderer);
     
-    // 2. T√≠tulo "SUDOKU MASTER"
-    SDL_Rect tituloRect = {WINDOW_WIDTH / 2 - 200, 50, 400, 80}; // Sub√≠ un poco el t√≠tulo (y=50)
+    // 2. Titulo "SUDOKU MASTER"
+    SDL_Rect tituloRect = {WINDOW_WIDTH / 2 - 200, 50, 400, 80}; // Subir un poco el titulo (y=50)
     SDL_SetRenderDrawColor(renderer, 80, 80, 150, 255);
     SDL_RenderFillRect(renderer, &tituloRect);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -29,13 +29,13 @@ void dibujarMenuPrincipal(SDL_Renderer* renderer) {
     dibujarTextoCentrado(renderer, tituloRect.x, tituloRect.y, 
                         tituloRect.w, tituloRect.h, "SUDOKU MASTER", colorBlanco);
     
-    // 3. Configuraci√≥n de Botones
+    // 3. Configuracion de Botones
     int botonWidth = 300;
-    int botonHeight = 50; // Los hice un poquito m√°s bajos para que entren bien
-    int startY = 160;     // Empezamos m√°s arriba
+    int botonHeight = 50; // Los hice un poquito mas bajos para que entren bien
+    int startY = 160;     // Empezamos mas arriba
     int spacing = 15;     // Menos espacio entre ellos
     
-    // --- BOT√ìN JUGAR ---
+    // --- BOTON JUGAR ---
     SDL_Rect jugarRect = {WINDOW_WIDTH/2 - botonWidth/2, startY, botonWidth, botonHeight};
     SDL_SetRenderDrawColor(renderer, 70, 100, 70, 255); // Verde
     SDL_RenderFillRect(renderer, &jugarRect);
@@ -43,7 +43,7 @@ void dibujarMenuPrincipal(SDL_Renderer* renderer) {
     SDL_RenderDrawRect(renderer, &jugarRect);
     dibujarTextoCentrado(renderer, jugarRect.x, jugarRect.y, jugarRect.w, jugarRect.h, "JUGAR", colorBlanco);
 
-    // --- BOT√ìN RANKING (NUEVO) ---
+    // --- BOTON RANKING (NUEVO) ---
     SDL_Rect rankingRect = {WINDOW_WIDTH/2 - botonWidth/2, startY + botonHeight + spacing, botonWidth, botonHeight};
     SDL_SetRenderDrawColor(renderer, 200, 150, 50, 255); // Color Naranja/Dorado
     SDL_RenderFillRect(renderer, &rankingRect);
@@ -51,7 +51,7 @@ void dibujarMenuPrincipal(SDL_Renderer* renderer) {
     SDL_RenderDrawRect(renderer, &rankingRect);
     dibujarTextoCentrado(renderer, rankingRect.x, rankingRect.y, rankingRect.w, rankingRect.h, "VER RANKING", colorBlanco);
     
-    // --- BOT√ìN INSTRUCCIONES ---
+    // --- BOTON INSTRUCCIONES ---
     SDL_Rect instruccRect = {WINDOW_WIDTH/2 - botonWidth/2, startY + 2*(botonHeight + spacing), botonWidth, botonHeight};
     SDL_SetRenderDrawColor(renderer, 70, 70, 100, 255); // Azulado
     SDL_RenderFillRect(renderer, &instruccRect);
@@ -59,7 +59,7 @@ void dibujarMenuPrincipal(SDL_Renderer* renderer) {
     SDL_RenderDrawRect(renderer, &instruccRect);
     dibujarTextoCentrado(renderer, instruccRect.x, instruccRect.y, instruccRect.w, instruccRect.h, "INSTRUCCIONES", colorBlanco);
     
-    // --- BOT√ìN SALIR ---
+    // --- BOTON SALIR ---
     SDL_Rect salirRect = {WINDOW_WIDTH/2 - botonWidth/2, startY + 3*(botonHeight + spacing), botonWidth, botonHeight};
     SDL_SetRenderDrawColor(renderer, 100, 70, 70, 255); // Rojizo
     SDL_RenderFillRect(renderer, &salirRect);
@@ -67,7 +67,7 @@ void dibujarMenuPrincipal(SDL_Renderer* renderer) {
     SDL_RenderDrawRect(renderer, &salirRect);
     dibujarTextoCentrado(renderer, salirRect.x, salirRect.y, salirRect.w, salirRect.h, "SALIR", colorBlanco);
 
-    // 4. Mostrar √∫ltimo jugador (si existe) al pie de p√°gina
+    // 4. Mostrar ultimo jugador (si existe) al pie de pagina
     if (ultimoPuntaje > 0) {
         char infoAnterior[100];
         sprintf(infoAnterior, "Ultima partida: %s - %d pts", ultimoJugador, ultimoPuntaje);
@@ -83,13 +83,13 @@ void manejarClickMenu(int x, int y) {
     int startY = 160;
     int spacing = 15;
     
-    // Definimos los rect√°ngulos invisibles para detectar el click
+    // Definimos los rectangulos invisibles para detectar el click
     SDL_Rect jugarRect     = {WINDOW_WIDTH/2 - botonWidth/2, startY, botonWidth, botonHeight};
     SDL_Rect rankingRect   = {WINDOW_WIDTH/2 - botonWidth/2, startY + botonHeight + spacing, botonWidth, botonHeight};
     SDL_Rect instruccRect  = {WINDOW_WIDTH/2 - botonWidth/2, startY + 2*(botonHeight + spacing), botonWidth, botonHeight};
     SDL_Rect salirRect     = {WINDOW_WIDTH/2 - botonWidth/2, startY + 3*(botonHeight + spacing), botonWidth, botonHeight};
 
-    // --- DETECCI√ìN DE CLICKS ---
+    // --- DETECCION DE CLICKS ---
 
     // 1. JUGAR -> Va a ingreso de nombre
     if (x >= jugarRect.x && x < jugarRect.x + jugarRect.w && y >= jugarRect.y && y < jugarRect.y + jugarRect.h) {
@@ -118,11 +118,11 @@ void dibujarIngresoNombre(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 40, 44, 52, 255);
     SDL_RenderClear(renderer);
 
-    // T√≠tulo
+    // Titulo
     SDL_Color colorTitulo = {100, 255, 100, 255};
     dibujarTextoCentrado(renderer, 0, 100, WINDOW_WIDTH, 50, "NUEVA PARTIDA", colorTitulo);
 
-    // Instrucci√≥n
+    // Instruccion
     SDL_Color colorBlanco = {255, 255, 255, 255};
     dibujarTextoCentrado(renderer, 0, 200, WINDOW_WIDTH, 30, "Ingresa tu nombre para comenzar:", colorBlanco);
 
@@ -159,7 +159,7 @@ void manejarEscrituraNombre(SDL_Event* event) {
             if (strlen(nombreJugador) > 0) {
                 SDL_StopTextInput();
                 
-                // REINICIAR VIDAS Y PUNTUACI”N AL INICIAR NUEVA PARTIDA
+                // REINICIAR VIDAS Y PUNTUACION AL INICIAR NUEVA PARTIDA
                 vidasRestantes = 3;
                 puntuacionActual = 1500;
                 reiniciarTemporizador(); 
@@ -178,7 +178,7 @@ void dibujarInstrucciones(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 40, 44, 52, 255);
     SDL_RenderClear(renderer);
     
-    // T√≠tulo
+    // Titulo
     SDL_Rect tituloRect = {
         WINDOW_WIDTH / 2 - 200,
         50,
@@ -194,7 +194,7 @@ void dibujarInstrucciones(SDL_Renderer* renderer) {
     dibujarTextoCentrado(renderer, tituloRect.x, tituloRect.y, 
                         tituloRect.w, tituloRect.h, "INSTRUCCIONES", colorBlanco);
     
-    // √Årea de texto de instrucciones
+    // Area de texto de instrucciones
     SDL_Rect textoRect = {
         WINDOW_WIDTH / 2 - 250,
         130,
@@ -220,9 +220,9 @@ void dibujarInstrucciones(SDL_Renderer* renderer) {
     dibujarTextoCentrado(renderer, textoRect.x, textoRect.y + 180, 
                         textoRect.w, 30, "- Clic en celda + seleccionar numero", colorBlanco);
     dibujarTextoCentrado(renderer, textoRect.x, textoRect.y + 210, 
-                        textoRect.w, 30, "- °Completa todo el tablero!", colorBlanco);
+                        textoRect.w, 30, "- „ÄÇompleta todo el tablero!", colorBlanco);
     
-    // Bot√≥n VOLVER
+    // Boton VOLVER
     SDL_Rect volverRect = {
         WINDOW_WIDTH / 2 - 100,
         450,
@@ -251,7 +251,7 @@ void manejarClickInstrucciones(int x, int y) {
     }
 }
 
-// NUEVA FUNCI”N: Dibujar pantalla de Game Over
+// NUEVA FUNCION: Dibujar pantalla de Game Over
 void dibujarGameOver(SDL_Renderer* renderer) {
     // Fondo negro
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -265,18 +265,18 @@ void dibujarGameOver(SDL_Renderer* renderer) {
     SDL_Color blanco = {255, 255, 255, 255};
     dibujarTextoCentrado(renderer, 0, 250, WINDOW_WIDTH, 40, "Te quedaste sin vidas!", blanco);
     
-    // Mostrar puntuaciÛn final
+    // Mostrar puntuacion final
     char puntuacionStr[50];
     sprintf(puntuacionStr, "Puntuacion final: %d pts", puntuacionActual);
     dibujarTextoCentrado(renderer, 0, 300, WINDOW_WIDTH, 30, puntuacionStr, blanco);
     
-    // InstrucciÛn para continuar
+    // Instruccion para continuar
     dibujarTextoCentrado(renderer, 0, 350, WINDOW_WIDTH, 30, "Haz clic para volver al menu", blanco);
 }
 
-// NUEVA FUNCI”N: Manejar click en pantalla de Game Over
+// NUEVA FUNCION: Manejar click en pantalla de Game Over
 void manejarClickGameOver(int x, int y) {
-    // Cualquier click vuelve al men˙
+    // Cualquier click vuelve al menÔøΩ
     estadoActual = ESTADO_MENU;
 }
 
@@ -286,7 +286,7 @@ void dibujarRanking(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 30, 30, 40, 255);
     SDL_RenderClear(renderer);
 
-    // 2. TÌtulo
+    // 2. Titulo
     SDL_Color colorTitulo = {255, 100, 100, 255};
     dibujarTextoCentrado(renderer, 0, 30, WINDOW_WIDTH, 60, "MEJORES PUNTAJES", colorTitulo);
 
@@ -306,7 +306,7 @@ void dibujarRanking(SDL_Renderer* renderer) {
     dibujarTextoCentrado(renderer, 350, 90, 80, 30, "VIDAS", colorTexto); // NUEVO ENCABEZADO
     
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderDrawLine(renderer, 50, 120, 430, 120); // LÌnea separadora
+    SDL_RenderDrawLine(renderer, 50, 120, 430, 120); // LÁíØea separadora
 
     int i;
     for (i = 0; i < cantidad; i++) {
@@ -330,7 +330,7 @@ void dibujarRanking(SDL_Renderer* renderer) {
         dibujarVidasRanking(renderer, 350, startY + i*lineHeight, tops[i].vidas);
     }
 
-    // 5. BotÛn Volver
+    // 5. Boton Volver
     SDL_Rect btnVolver = {WINDOW_WIDTH/2 - 100, WINDOW_HEIGHT - 80, 200, 50};
     SDL_SetRenderDrawColor(renderer, 100, 100, 150, 255);
     SDL_RenderFillRect(renderer, &btnVolver);
@@ -348,9 +348,9 @@ void manejarClickRanking(int x, int y) {
     }
 }
 
-// NUEVA FUNCI”N: Dibujar corazones de vidas en el ranking
+// NUEVA FUNCION: Dibujar corazones de vidas en el ranking
 void dibujarVidasRanking(SDL_Renderer* renderer, int x, int y, int vidas) {
-    int vidaSize = 20;  // TamaÒo m·s pequeÒo para el ranking
+    int vidaSize = 20;  // Tama√±o mas peque√±o para el ranking
     int spacing = 4;
     
     // Dibujar corazones pixelados
@@ -359,17 +359,17 @@ void dibujarVidasRanking(SDL_Renderer* renderer, int x, int y, int vidas) {
         int posX = x + i * (vidaSize + spacing);
         int posY = y + 5; // Centrar verticalmente
         
-        // Color del corazÛn
+        // Color del corazon
         if (i < vidas) {
             SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // Rojo
         } else {
             SDL_SetRenderDrawColor(renderer, 60, 60, 60, 255); // Gris oscuro
         }
         
-        // PatrÛn de corazÛn 6x6 pixelado (m·s pequeÒo para ranking)
+        // Patron de corazon 6x6 pixelado (mas peque√±o para ranking)
         int pixelSize = vidaSize / 6;
         
-        // Definir el patrÛn del corazÛn reducido (1 = dibujar pixel, 0 = vacÌo)
+        // Definir el patron del corazon reducido (1 = dibujar pixel, 0 = vacio)
         int heartPattern[6][6] = {
             {0,1,1,0,1,1},
             {1,1,1,1,1,1},
@@ -379,7 +379,7 @@ void dibujarVidasRanking(SDL_Renderer* renderer, int x, int y, int vidas) {
             {0,0,0,0,0,0}
         };
         
-        // Dibujar el corazÛn pixel por pixel
+        // Dibujar el corazon pixel por pixel
         int row, col;
         for (row = 0; row < 6; row++) {
             for (col = 0; col < 6; col++) {
@@ -396,4 +396,5 @@ void dibujarVidasRanking(SDL_Renderer* renderer, int x, int y, int vidas) {
         }
     }
 }
+
 
