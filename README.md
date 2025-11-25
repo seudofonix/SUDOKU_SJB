@@ -1,7 +1,8 @@
 # SUDOKU
 
 
-<img width="705" height="532" alt="sudoku" src="https://github.com/user-attachments/assets/02b19f92-887f-4b79-980c-263fe81d5d9a" />
+<img width="690" height="507" alt="sudoku" src="https://github.com/user-attachments/assets/c7b1e001-800f-448e-8227-cfa61abe8f98" />
+
 
 
 
