@@ -2,13 +2,57 @@
 # SUDOKU_SJB
 Implementacion del Sudoku para Algoritmica y Programacion I. Universidad Nacional de la Patagonia San Juan Bosco (UNPSJB) 2025.
 
-
 # COMANDOS DE COMPILACION
 gcc -Wall -o sudoku main.c tablero.c graficos.c archivos.c -I/usr/include/SDL2 -L/usr/lib -lSDL2main -lSDL2 -lSDL2_ttf 
 
 "./sudoku.exe"
 
+## DESCRIPCIÓN
+Sudoku Master es un juego completo de Sudoku desarrollado en C con interfaz gráfica usando SDL2. Incluye generación automática de tableros, sistema de puntuación, ranking de jugadores y gestión de vidas.
 
+## CARACTERÍSTICAS
+- Interfaz gráfica completa con SDL2
+- Generación automática de tableros con solución única
+- Sistema de puntuación basado en tiempo
+- Gestión de vidas (3 vidas iniciales)
+- Ranking persistente de jugadores
+- Sistema de guardado de puntuaciones
+- Control completamente por mouse
+
+## ESTRUCTURA DE ARCHIVOS
+- `main.c` - Punto de entrada principal del programa
+- `tablero.c/h` - Lógica del juego y generación de tableros
+- `graficos.c/h` - Interfaz gráfica y renderizado
+- `menu.c/h` - Sistema de menús y estados del juego
+- `archivos.c/h` - Gestión de rankings y persistencia
+- `tiempo.c/h` - Sistema de temporizador
+
+## COMPILACIÓN
+### En Dev-C++:
+1. Crear un proyecto vacío en C
+2. Agregar todos los archivos .c
+3. Configurar los parámetros del linker: `-lSDL2main -lSDL2 -lSDL2_ttf -lm`
+4. Compilar el proyecto
+
+## CONTROLES
+- **Clic izquierdo**: Seleccionar celdas y números
+- **Números 1-9**: Insertar números en celdas vacías
+- **Borrar**: Eliminar número de celda seleccionada
+- **Enter**: Confirmar nombre de jugador
+
+## SISTEMA DE PUNTUACIÓN
+- Puntuación base: 1500 puntos
+- Tiempo límite: 2 minutos para puntuación perfecta
+- Penalización: -500 puntos por error
+- Vidas perdidas: -100 puntos por vida
+- Puntuación mínima: 0 puntos
+
+## DESARROLLADO POR
+- Nicol Montaño
+- Evelyn Orellana  
+- Ignacio Bullón
+- Evelyn Fernandez
+  
 # TAREAS
 __1. Nicol Montaño:__
     Tarea Principal: Algoritmo para generar tablero posible
@@ -45,16 +89,6 @@ __4. Evelyn Fernandez__
     Implementar sistema que muestre números repetidos en otro color
     Detectar y resaltar conflictos en tiempo real
     Crear y destruir tableros (gestión de memoria) (LISTO)
-
-# ARCHIVOS
-
-__MAIN.C__
-Archivo base, se encarga de manejar la logica del menu. 
-
-Archivo header, contiene las definiciones de las funciones y las estructuras del juego. 
-
-__GRAFICOS.H y GRAFICOS.C__
-Archivo de graficos, todas las funciones que manejen los graficos se encuentran dentro de estos dos archivos. 
 
 # PRACTICAS DE CODIGO 
 Todas las funciones que tengan valores de retorno deben devolver 0 (cero) en caso de fallo y 1 (uno) en caso de exito. 
