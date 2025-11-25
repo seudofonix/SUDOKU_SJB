@@ -1,4 +1,0 @@
-cd trabajos_practicos/SUDOKU_SJB-main
-ls -la (deberiamos ver main.c, tablero.c, tablero.h)
-gcc main.c tablero.c -o sudoku.exe
-./sudoku.exe
