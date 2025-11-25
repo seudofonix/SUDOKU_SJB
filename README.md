@@ -1,5 +1,10 @@
 # SUDOKU
 
+
+<img width="795" height="597" alt="sudoku" src="https://github.com/user-attachments/assets/a15858c3-f1e7-451e-a68b-d513fb2d2c05" />
+
+
+
 ## Integrantes 
 - Nicol Montaño
 - Evelyn Orellana  
